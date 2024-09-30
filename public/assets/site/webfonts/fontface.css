@@ -1,0 +1,51 @@
+@charset "utf-8";
+/* CSS Document */
+/*! Design and Develop By: Bikash Bhandari (bikash.433@gmail.com) on May 23, 2018 */
+@font-face
+{
+	font-family:"roboto-light";
+	src: url('../fonts/roboto-light-webfont.eot');
+    src: url('../fonts/roboto-light-webfontd41d.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto-light-webfont.woff') format('woff'),
+         url('../fonts/roboto-light.html') format('truetype'),
+         url('../fonts/roboto-light-webfont.svg') format('svg');
+    font-style: normal;
+	font-weight: normal;
+}
+
+@font-face
+{
+	font-family:"roboto-bold";
+	src: url('../fonts/roboto-bold-webfont.eot');
+    src: url('../fonts/roboto-bold-webfontd41d.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto-bold-webfont.woff') format('woff'),
+         url('../fonts/roboto-bold.html') format('truetype'),
+         url('../fonts/roboto-bold-webfont.svg') format('svg');
+    font-style: normal;
+	font-weight: normal;
+}
+
+@font-face
+{
+	font-family:"roboto-medium";
+	src: url('../fonts/roboto-medium-webfont.eot');
+    src: url('../fonts/roboto-medium-webfontd41d.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto-medium-webfont.woff') format('woff'),
+         url('../fonts/roboto-medium.html') format('truetype'),
+         url('../fonts/roboto-medium-webfont.svg') format('svg');
+    font-style: normal;
+	font-weight: normal;
+}
+
+@font-face
+{
+	font-family:"roboto-regular";
+	src: url('../fonts/roboto-regular-webfont.eot');
+    src: url('../fonts/roboto-regular-webfontd41d.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto-regular-webfont.woff') format('woff'),
+         url('../fonts/roboto-regular.html') format('truetype'),
+         url('../fonts/roboto-regular-webfont.svg') format('svg');
+    font-style: normal;
+	font-weight: normal;
+}
+

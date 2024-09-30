@@ -1,0 +1,91 @@
+@charset "utf-8";
+/* CSS Document */
+/*! Design and Develop By: Bikash Bhandari (bikash.433@gmail.com) on May 23, 2018 */
+@import url('fontface.css');
+@import url('fontawesome-all.min.css');
+/*@import url('animate.min.css');*/
+
+img {
+	max-width: 100%;
+}
+
+#themelist {
+	margin-top: 15px
+}
+#themelist .theme-box {
+	position: relative;
+	margin-bottom: 30px;
+	box-shadow: 0 0 4px 0 rgba(0,0,0,.25);
+	overflow: hidden;
+	height: 400px;
+	-webkit-transition: all .4s ease;
+    transition: all .4s ease;
+}
+#themelist .theme-box a img{-webkit-transition: 2.9s ease-in-out; transition: 2.9s ease-in-out;}
+#themelist .theme-box:hover a img{margin-top:-160px;}
+
+@media (max-width:991px) {
+#themelist .theme-box img {
+	width: 100%
+}
+}
+#themelist .theme-box .theme-info {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: rgba(255,255,255,.95);
+	box-shadow: 0 0 6px 0 rgba(0,0,0,.25);
+	height: 164px
+}
+#themelist .theme-box .theme-info h2 {
+	margin: 0;
+	font-size: 20px;
+	padding: 15px 10px;
+	float: left
+}
+#themelist .theme-box .theme-info h2 a {
+	color: #555
+}
+#themelist .theme-box .theme-downloads {
+	float: right;
+	padding: 18px 15px 0 0;
+	color: #90a4ae;
+}
+#themelist .theme-box .theme-downloads  a{color:#90a4ae;}
+#themelist .theme-box .theme-downloads  a:hover, #themelist .theme-box .theme-downloads.active  a, #themelist .theme-box .theme-downloads.active  a:hover, #themelist .theme-box .theme-info h2 a:hover{color:#007bff;}
+#themelist .theme-box .theme-info p {
+	font-size: 13px;
+	color: #555;
+	padding: 0 10px;
+	margin: 0;
+	height: 56px;
+	overflow: hidden
+}
+#themelist .theme-box .buttons {
+	/* margin-top: 10px; */
+	text-align: center
+}
+#themelist .theme-box .buttons a {
+	display: inline-block;
+	padding: 4px 14px;
+	font-size: 13px;
+	border-radius: 2px;
+	color: #555;
+	margin: 0 5px;
+	background: #eee
+}
+@media (max-width:1900px) {
+#themelist .theme-box .buttons a {
+	padding: 4px 8px;
+	margin: 0 2px
+}
+}
+
+#themelist .theme-box .buttons a:hover {
+    color: #fff;
+    background: #1e5f8d;
+}
+#themelist .theme-box .buttons a.log-in:hover {
+    background: #00a651;
+}
