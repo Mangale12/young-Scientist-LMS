@@ -1,6 +1,5 @@
 <?php
 Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('index');
-
 Route::group(['prefix' => 'fiscal-year',             'as' => 'fiscal_year.'], function () {
     Route::get('/',                                    [App\Http\Controllers\Admin\FiscalYearController::class, 'index'])->name('index');
     Route::get('fiscal-year/data',                     [App\Http\Controllers\Admin\FiscalYearController::class, 'getData'])->name('data');
@@ -90,29 +89,53 @@ Route::group(['prefix' => 'role',             'as' => 'role.'], function () {
 
 Route::group(['prefix' => 'chalani',             'as' => 'chalani.'], function () {
     Route::get('/',                                    [App\Http\Controllers\Admin\ChalaniController::class, 'index'])->name('index');
-    Route::get('/data',                         [App\Http\Controllers\Admin\ChalaniController::class, 'getData'])->name('data');
+    Route::get('/data',                                [App\Http\Controllers\Admin\ChalaniController::class, 'getData'])->name('data');
+    Route::get('/all',                                 [App\Http\Controllers\Admin\ChalaniController::class, 'all'])->name('all');
+    Route::get('/data-all',                            [App\Http\Controllers\Admin\ChalaniController::class, 'getAllData'])->name('data-all');
+    Route::get('/verified-chalani',                    [App\Http\Controllers\Admin\ChalaniController::class, 'getAllData'])->name('verified-chalani');
+    Route::get('/unverified-chalani',                  [App\Http\Controllers\Admin\ChalaniController::class, 'getAllData'])->name('unverified-chalani');
+    Route::get('/ward-data',                           [App\Http\Controllers\Admin\ChalaniController::class, 'wardForm'])->name('ward-data');
+    Route::post('/get-ward-data',                       [App\Http\Controllers\Admin\ChalaniController::class, 'getWardData'])->name('get-ward-data');
     Route::get('/create',                              [App\Http\Controllers\Admin\ChalaniController::class, 'create'])->name('create');
     Route::post('',                                    [App\Http\Controllers\Admin\ChalaniController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\ChalaniController::class, 'edit'])->name('edit');
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\ChalaniController::class, 'update'])->name('update');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\ChalaniController::class, 'destroy'])->name('destroy');
     Route::get('show/{id}',                            [App\Http\Controllers\Admin\ChalaniController::class, 'show'])->name('show');
-    Route::get('status/{id}',                          [App\Http\Controllers\Admin\ChalaniController::class, 'status'])->name('status');
+    Route::post('status/{id}',                         [App\Http\Controllers\Admin\ChalaniController::class, 'status'])->name('status');
+    Route::delete('delete-image/{id}',                 [App\Http\Controllers\Admin\ChalaniController::class, 'deleteImage'])->name('delete-image');
+    Route::get('download-image/{key}',                 [App\Http\Controllers\Admin\ChalaniController::class, 'downloadImage'])->name('download-image');
 });
 
 Route::group(['prefix' => 'darta',             'as' => 'darta.'], function () {
     Route::get('/',                                    [App\Http\Controllers\Admin\DartaController::class, 'index'])->name('index');
-    Route::get('/data',                         [App\Http\Controllers\Admin\DartaController::class, 'getData'])->name('data');
+    Route::get('/data',                                [App\Http\Controllers\Admin\DartaController::class, 'getData'])->name('data');
+    Route::get('/ward-data',                           [App\Http\Controllers\Admin\DartaController::class, 'wardForm'])->name('ward-data');
+    Route::post('/get-ward-data',                       [App\Http\Controllers\Admin\DartaController::class, 'getWardData'])->name('get-ward-data');
+    Route::get('/all',                                 [App\Http\Controllers\Admin\DartaController::class, 'all'])->name('all');
+    Route::get('/data-all',                            [App\Http\Controllers\Admin\DartaController::class, 'getAllData'])->name('data-all');
+    Route::get('/verified-darta',                      [App\Http\Controllers\Admin\DartaController::class, 'getAllData'])->name('verified-darta');
+    Route::get('/unverified-darta',                    [App\Http\Controllers\Admin\DartaController::class, 'getAllData'])->name('unverified-darta');
     Route::get('/create',                              [App\Http\Controllers\Admin\DartaController::class, 'create'])->name('create');
     Route::post('',                                    [App\Http\Controllers\Admin\DartaController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\DartaController::class, 'edit'])->name('edit');
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\DartaController::class, 'update'])->name('update');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\DartaController::class, 'destroy'])->name('destroy');
-    Route::get('show/{id}',                         [App\Http\Controllers\Admin\DartaController::class, 'show'])->name('show');
-    Route::get('status/{id}',                          [App\Http\Controllers\Admin\DartaController::class, 'status'])->name('status');
+    Route::delete('delete-image/{id}',                 [App\Http\Controllers\Admin\DartaController::class, 'deleteImage'])->name('delete-image');
+    Route::get('show/{id}',                            [App\Http\Controllers\Admin\DartaController::class, 'show'])->name('show');
+    Route::post('status/{id}',                          [App\Http\Controllers\Admin\DartaController::class, 'status'])->name('status');
+    Route::get('download-image/{key}',                 [App\Http\Controllers\Admin\ChalaniController::class, 'downloadImage'])->name('download-image');
 
 });
 
+// Route for all darta chalani
+Route::group(['prefix' => 'darta-chalani',             'as' => 'darta-chalani.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\DartaChalaniController::class, 'index'])->name('index');
+    Route::get('/data',                                [App\Http\Controllers\Admin\DartaChalaniController::class, 'getData'])->name('data');
+    Route::get('/verified-data',                      [App\Http\Controllers\Admin\DartaChalaniController::class, 'getData'])->name('verified-data');
+    Route::get('/unverified-data',                    [App\Http\Controllers\Admin\DartaChalaniController::class, 'getData'])->name('unverified-data');
+
+});
 //Old Documentation Route
 Route::group(['prefix' => 'old-document',             'as' => 'old-document.'], function () {
     Route::get('/',                                    [App\Http\Controllers\Admin\OldDocumentController::class, 'index'])->name('index');
@@ -123,7 +146,7 @@ Route::group(['prefix' => 'old-document',             'as' => 'old-document.'], 
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\OldDocumentController::class, 'update'])->name('update');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\OldDocumentController::class, 'destroy'])->name('destroy');
     Route::get('show/{id}',                            [App\Http\Controllers\Admin\OldDocumentController::class, 'show'])->name('show');
-    Route::get('status/{id}',                          [App\Http\Controllers\Admin\OldDocumentController::class, 'status'])->name('status');
+    Route::post('status/{id}',                          [App\Http\Controllers\Admin\OldDocumentController::class, 'status'])->name('status');
 
 });
 
@@ -134,8 +157,108 @@ Route::group(['prefix' => 'user',             'as' => 'user.'], function () {
     Route::post('',                                    [App\Http\Controllers\Admin\UserController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('edit');
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\UserController::class, 'update'])->name('update');
+    Route::get('/change-passwords/{id}',               [App\Http\Controllers\Admin\UserController::class, 'changePassword'])->name('change-passwords');
+    Route::get('/change_password',                     [App\Http\Controllers\Admin\UserController::class, 'changePassword'])->name('change-password');
+    Route::put('/update-passwords/{id}',               [App\Http\Controllers\Admin\UserController::class, 'updatePasswords'])->name('update-passwords');
+    Route::put('/update-password/{id}',               [App\Http\Controllers\Admin\UserController::class, 'updatePassword'])->name('update-password');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('destroy');
     Route::get('show/{id}',                            [App\Http\Controllers\Admin\UserController::class, 'show'])->name('show');
-    Route::get('status/{id}',                          [App\Http\Controllers\Admin\UserController::class, 'status'])->name('status');
+    Route::post('status/{id}',                         [App\Http\Controllers\Admin\UserController::class, 'status'])->name('status');
 
 });
+
+// setting routes
+Route::group(['prefix' => 'setting',             'as' => 'setting.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('index');
+    Route::get('chalani/data',                         [App\Http\Controllers\Admin\SettingController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\SettingController::class, 'create'])->name('create');
+    Route::post('',                                    [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\SettingController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('update');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\SettingController::class, 'destroy'])->name('destroy');
+    Route::get('show/{id}',                            [App\Http\Controllers\Admin\SettingController::class, 'show'])->name('show');
+    Route::post('status/{id}',                          [App\Http\Controllers\Admin\SettingController::class, 'status'])->name('status');
+
+});
+
+
+// Grade Type Route
+Route::group(['prefix' => 'grade',             'as' => 'grade.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\GradeController::class, 'index'])->name('index');
+    Route::get('/data/all',                         [App\Http\Controllers\Admin\GradeController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\GradeController::class, 'create'])->name('create');
+    Route::post('',                                    [App\Http\Controllers\Admin\GradeController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\GradeController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\GradeController::class, 'update'])->name('update');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\GradeController::class, 'destroy'])->name('destroy');
+});
+
+// School Type Route
+Route::group(['prefix' => 'shool',             'as' => 'school.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\SchoolController::class, 'index'])->name('index');
+    Route::get('/data/all',                         [App\Http\Controllers\Admin\SchoolController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\SchoolController::class, 'create'])->name('create');
+    Route::post('',                                    [App\Http\Controllers\Admin\SchoolController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\SchoolController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\SchoolController::class, 'update'])->name('update');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\SchoolController::class, 'destroy'])->name('destroy');
+});
+
+// Section Route
+Route::group(['prefix' => 'section',             'as' => 'section.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\SectionController::class, 'index'])->name('index');
+    Route::get('/data/all',                         [App\Http\Controllers\Admin\SectionController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\SectionController::class, 'create'])->name('create');
+    Route::post('',                                    [App\Http\Controllers\Admin\SectionController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\SectionController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\SectionController::class, 'update'])->name('update');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\SectionController::class, 'destroy'])->name('destroy');
+});
+
+// settings Route
+Route::group(['prefix' => 'setting',             'as' => 'setting.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('index');
+    Route::get('/data/all',                         [App\Http\Controllers\Admin\SettingController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\SettingController::class, 'create'])->name('create');
+    Route::post('/',                                    [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\SettingController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('update');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\SettingController::class, 'destroy'])->name('destroy');
+});
+
+// Course Route
+Route::group(['prefix' => 'course',             'as' => 'course.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\CourseController::class, 'index'])->name('index');
+    Route::get('/data/all',                            [App\Http\Controllers\Admin\CourseController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\CourseController::class, 'create'])->name('create');
+    Route::post('/',                                   [App\Http\Controllers\Admin\CourseController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\CourseController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\CourseController::class, 'update'])->name('update');
+    Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\CourseController::class, 'chapters'])->name('chapters');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('destroy');
+});
+
+// Chapter Route
+Route::group(['prefix' => 'chapters',             'as' => 'chapters.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\ChapterController::class, 'index'])->name('index');
+    Route::get('/data/all',                            [App\Http\Controllers\Admin\ChapterController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\ChapterController::class, 'create'])->name('create');
+    Route::post('/',                                   [App\Http\Controllers\Admin\ChapterController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\ChapterController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\ChapterController::class, 'update'])->name('update');
+    Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\ChapterController::class, 'chapters'])->name('chapters');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\ChapterController::class, 'destroy'])->name('destroy');
+});
+
+// Chapter Category Route
+Route::group(['prefix' => 'chapter-category',             'as' => 'chapter-category.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\ChapterCategoryController::class, 'index'])->name('index');
+    Route::get('/data/all',                            [App\Http\Controllers\Admin\ChapterCategoryController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\ChapterCategoryController::class, 'create'])->name('create');
+    Route::post('/',                                   [App\Http\Controllers\Admin\ChapterCategoryController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\ChapterCategoryController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\ChapterCategoryController::class, 'update'])->name('update');
+    Route::put('/chapters/{id}',                       [App\Http\Controllers\Admin\ChapterCategoryController::class, 'chapters'])->name('chapters');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\ChapterCategoryController::class, 'destroy'])->name('destroy');
+});
+

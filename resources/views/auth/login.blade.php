@@ -74,7 +74,7 @@
 
 <div class="login-box">
     <div class="login-logo">
-      <a ><b>चिशंखुगढी गाउँपालिका</b></a>
+      <a ><b>Young Scientist LMS</b></a>
     </div>
     <!-- /.login-logo -->
     <div class="card">

@@ -84,7 +84,11 @@ class OldDocumentController extends DM_BaseController
         }
     }
     public function edit($id){
-        $data['fiscalYears'] = $this->fiscalYearService->getAll();
+        $data['darta_no'] = $this->service->generateDartaNo();
+        $data['fiscalYears'] = $this->service->getFiscal();
+        $data['offices'] = $this->service->getOffice();
+        $data['branches'] = $this->service->getBranch();
+        $data['documentTypes'] = $this->service->getDocumentType();
         $data['rows'] = $this->service->getById($id);
         return view(parent::loadView($this->view_path.'.edit'), compact('data'));
     }

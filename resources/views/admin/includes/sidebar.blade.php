@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
       <img src="{{ asset('dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">चिशंखुगढी गाउँपालिका</span>
+      <span class="brand-text font-weight-light">Young Scientist LMS</span>
     </a>
 
     <!-- Sidebar -->
@@ -44,37 +44,58 @@
 
           </li>
           <li class="nav-item">
-            <a href="{{route('admin.fiscal_year.index')}}" class="nav-link {{ ($_panel == 'Fiscal Year') ? 'active' : '' }}">
+            <a href="{{route('admin.school.index')}}" class="nav-link {{ ($_panel == 'School') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>School</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('admin.grade.index')}}" class="nav-link {{ ($_panel == 'Grade') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>Grade</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('admin.section.index')}}" class="nav-link {{ ($_panel == 'Section') ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                आर्थिक वर्ष
-                <span class="right badge badge-danger">New</span>
+                Section
+                
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{route('admin.setting.index')}}" class="nav-link {{ ($_panel == 'Setting') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Settings
+                
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{route('admin.darta.index')}}" class="nav-link {{ ($_panel == 'Darta') ? 'active' : '' }}">
+            <a href="{{route('admin.course.index')}}" class="nav-link {{ ($_panel == 'Course') ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                दर्ता
-                <span class="right badge badge-danger">New</span>
+                Course
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{route('admin.chalani.index')}}" class="nav-link {{ ($_panel == 'Chalani') ? 'active' : '' }}">
+            <a href="{{route('admin.chapter-category.index')}}" class="nav-link {{ ($_panel == 'Chapter Category') ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                चलानी
-                <span class="right badge badge-danger">New</span>
+                Chapter Category
               </p>
             </a>
           </li>
+
           <li class="nav-item">
-            <a href="{{ route('admin.branch.index') }}" class="nav-link {{ ($_panel == 'Branch') ? 'active' : '' }}">
+            <a href="{{ route('admin.chapters.index') }}" class="nav-link {{ ($_panel == 'Chapter') ? 'active' : '' }}">
               <i class="nav-icon fas fa-copy"></i>
               <p>
-                साखा
+                Chapters
               </p>
             </a>
 
@@ -131,11 +152,17 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
-              <i class="nav-icon fas fa-columns"></i>
-              <p>
-                Kanban Board
-              </p>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="nav-icon fas fa-columns"></i>
+                <p>
+                  लग आउट
+                </p>
+            </a>
+            <a href="pages/kanban.html" >
+
             </a>
           </li>
           <li class="nav-item">

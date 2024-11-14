@@ -176,6 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Yajra\DataTables\DataTablesServiceProvider::class,
+        UniSharp\LaravelFilemanager\LaravelFilemanagerServiceProvider::class,
+
 
     ],
 

@@ -71,7 +71,15 @@ textarea {
                             </tr>
                             <tr>
                                 <th>कागजातको अपलोड :</th>
-                                <td><a href="#">Download Document</a></td>
+                                <td>
+                                    @foreach($data['rows']->images as $image)
+                                        <li><a href="javascript:void(0);"
+                                            class="download-file"
+                                            onclick="downloadFile('{{ asset($image->image_path) }}')" data-key="{{ $image->key }}">
+                                            {{ $image->document ? $image->document->name : 'N/A' }}
+                                         </a></li>
+                                    @endforeach
+                                    </td>
                             </tr>
                             <tr>
                                 <th>अपलोड गरिएको कागजात(हरु) हेर्नुहोस् :</th>
@@ -104,12 +112,17 @@ textarea {
                             <div class="form-group">
                                 <label for="file">फाइल</label>
                                 <input type="file" class="form-control-file" id="file">
+                                <button type="button" class="btn btn-primary">अपलोड गर्नुहोस</button>
                             </div>
-                            <button type="button" class="btn btn-success">
+                            <button type="button" class="btn btn-success" id="addUser">
                                 <i class="fa fa-users"></i> + Add Users
                             </button>
+                            <div id="userFields">
+                                <!-- Dynamic user input fields will be appended here -->
+                            </div>
                             <button type="submit" class="btn btn-primary">Send</button>
-                            <button type="button" class="btn btn-primary">अपलोड गर्नुहोस</button>
+
+
                         </form>
                     </div>
                 </div>
@@ -119,4 +132,50 @@ textarea {
 </div>
 @endsection
 @section('scripts')
+<script>
+    function downloadFile(url) {
+        // Use fetch to get the file from the URL
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.blob(); // Convert the response into a Blob
+            })
+            .then(blob => {
+                const link = document.createElement('a'); // Create an invisible anchor element
+                const objectUrl = URL.createObjectURL(blob); // Create a URL for the Blob
+                link.href = objectUrl;
+                link.download = url.split('/').pop(); // Use the last part of the URL as the filename
+                document.body.appendChild(link); // Append the link to the body
+                link.click(); // Trigger the download
+                document.body.removeChild(link); // Remove the link from the DOM
+                URL.revokeObjectURL(objectUrl); // Clean up the object URL
+            })
+            .catch(error => {
+                console.error('There was an error downloading the file:', error);
+            });
+    }
+
+    $(document).ready(function() {
+        $('.download-file').on('click', function(e) {
+            e.preventDefault();
+        alert('The file has been downloaded')
+            var key = $(this).data('key');
+            $.ajax({
+                url: "{{ route($_base_route.'.download-image', ['key' => 'KEY_PLACEHOLDER']) }}".replace('KEY_PLACEHOLDER', key), // Replace placeholder with actual key,
+                type: "GET",
+                success: function(response) {
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+
+
+
+
+</script>
 @endsection

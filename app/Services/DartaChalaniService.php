@@ -12,21 +12,22 @@ class DartaChalaniService extends DM_BaseService
     protected $folder_path_file;
     protected $folder = 'darta-chalani';
     protected $file   = 'file';
-    protected $prefix_path_image = '/upload_file/darta/';
-    protected $prefix_path_file = '/upload_file/darta/file/';
+    protected $prefix_path_image = '/upload_file/darta-chalani/';
+    protected $prefix_path_file = '/upload_file/darta-chalani/file/';
     protected $model;
     protected $image;
     protected $fiscalService;
     protected $officeService;
     protected $documentTypeService;
     protected $branchService;
-
-    public function __construct(DartaChalani $model, Image $image, OfficeService $officeService, DocumentTypeService $documentTypeService, BranchService $branchService, FiscalYearService $fiscalService)
+    protected $userService;
+    public function __construct(DartaChalani $model, Image $image, OfficeService $officeService, DocumentTypeService $documentTypeService, BranchService $branchService, FiscalYearService $fiscalService, UserService $userService)
     {
         $this->branchService = $branchService;
         $this->documentTypeService = $documentTypeService;
         $this->officeService = $officeService;
         $this->fiscalService = $fiscalService;
+        $this->userService = $userService;
         $this->image;
         $this->model = $model;
         $this->folder_path_image = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
@@ -34,10 +35,7 @@ class DartaChalaniService extends DM_BaseService
     }
 
     public function getAll(){
-        return $this->model::with('fiscalYear') // Eager load 'fiscalYear'
-                            ->where('is_approved', 0) // Add status filter
-                            ->whereHas('fiscalYear') // Ensure there's a fiscal year relationship
-                            ->get(); // Execute the query and get the results
+        return $this->model::all();
     }
     public function getOldData() {
         return $this->model::where('is_old', 1)
@@ -51,6 +49,17 @@ class DartaChalaniService extends DM_BaseService
                     ->where('is_old', 0)
                     ->get();
    }
+   public function getAllDarta() {
+        return $this->model::where('is_darta', 1)
+                            ->OrWhere('darta_no', '!=', null)
+                            ->get();
+   }
+   public function getApprovedDarta() {
+    return $this->model::where('is_approved', 1)
+                        ->where('is_darta', 1)
+                        ->where('is_old', 0)
+                        ->get();
+   }
    public function getChalani(){
     return $this->model::where('is_darta', 0)
                         ->where('is_approved', 0)
@@ -58,6 +67,26 @@ class DartaChalaniService extends DM_BaseService
                         ->get();
    }
 
+    public function getAllChalani() {
+        return $this->model::where('is_darta', 0)
+                            ->OrWhere('chalani_no', '!=', null)
+                            ->get();
+    }
+    public function getApprovedChalani() {
+        return $this->model::where('is_approved', 1)
+                            ->where('is_old', 0)
+                            ->where('is_darta', 0)
+                            ->get();
+    }
+
+    public function getApproved(){
+        return $this->model::where('is_approved', 1)
+                            ->get();
+    }
+    public function getPending(){
+        return $this->model::where('is_approved', 0)
+                            ->get();
+    }
    public function getFiscal(){
     return $this->fiscalService->getAll();
    }
@@ -67,6 +96,9 @@ class DartaChalaniService extends DM_BaseService
    public function getBranch(){
     return $this->branchService->getAll();
    }
+   public function getUser(){
+    return $this->userService->getAll();
+}
    public function getDocumentType(){
     return $this->documentTypeService->getAll();
    }
@@ -96,15 +128,15 @@ class DartaChalaniService extends DM_BaseService
             $record->office_id = $request->office_id;
             $record->unique_id = parent::generateUniqueRandomNumber('darta_chalanis', 'unique_id');
             $record->remarks = $request->remarks;
-
+            $record->ward_id = auth()->user()->ward_id;
             // Set darta_no and chalani_no based on is_darta flag
             if ($request->is_darta) {
-                $record->darta_no = $request->darta_no ?? $this->generateDartaNo(); // generate new darta_no if null
+                $record->darta_no = getNepToEng($request->darta_no ?? $this->generateDartaNo()); // generate new darta_no if null
                 $record->chalani_no = null; // chalani_no should be null
                 $record->is_darta = true; // set is_darta flag to true
             } elseif ($request->is_old) { //
-                $record->darta_no = $request->darta_no; // darta_no should be null
-                $record->chalani_no = $request->chalani_no; // chalani_no should not be null
+                $record->darta_no = getNepToEng($request->darta_no); // darta_no should be null
+                $record->chalani_no = getNepToEng($request->chalani_no); // chalani_no should not be null
                 $record->is_old = true; // set is_darta flag to false
             }
             else {
@@ -112,34 +144,52 @@ class DartaChalaniService extends DM_BaseService
                 $record->darta_no = null; // darta_no should be null
                 $record->is_darta = false; // set is_darta flag to false
             }
-
             // Save the record
+            $record->document_type_id = $request->document_type_id;
             $record->save();
 
-             // Handle images if present
-             if (isset($request->image)) {
-                foreach ($request->image as $imageFile) {
+            if (isset($request->document)) {
+                foreach ($request->document as $document) {
                     $image = new Image(); // Create a new Image model instance
-
                     // Upload each image and store the path
-                    $imagePath = parent::uploadImage($imageFile, $this->folder_path_image, $this->prefix_path_image);
-
-                    // Assign image path and associate it with the Chalani record
+                    $imagePath = parent::uploadImage($document['image'], $this->folder_path_image, $this->prefix_path_image);
                     $image->image_path = $imagePath;
                     $image->darta_chalani_id = $record->id;
-
-                    // Save image record
+                    $image->document_type_id = $document['document_type'];
+                    $image->key = parent::generateUniqueRandomNumber('images', 'key');
+                    // Get and optionally save the image size
+                    // $image->size = $document['image']->getSize();
                     $image->save();
                 }
             }
+
             DB::commit(); // Commit the transaction
             return $record;
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback the transaction if an error occurs
+            dd($th);
             return false;
+
             throw $th;
         }
 
+    }
+
+    public function getImageByKey($key){
+        return Image::where('key', $key)->firstOrFail();
+    }
+    public function downloadImage($key)
+    {
+        $image = $this->getImageByKey($key);
+
+        if ($image && file_exists(public_path($image->image_path))) {
+            // Increment download count
+            $image->download_count++;
+            $image->save();
+
+        } else {
+            return false;
+        }
     }
 
     // public function create($data)
@@ -209,7 +259,17 @@ class DartaChalaniService extends DM_BaseService
     //     return false;
     // }
     public function delete($id){
-        return $this->model::destroy($id);
+        $record = $this->getById($id);
+        if($record->images->isNotEmpty()) {
+            // Delete images associated with the record
+            // $images = Image::where('darta_chalani_id', $id)->get();
+            foreach ($record->images as $image) {
+                parent::deleteImage($image->image_path);
+                $image->delete();
+            }
+        }
+        $record->delete();
+        return true;
     }
 
      // Method to generate darta_no
@@ -246,4 +306,99 @@ class DartaChalaniService extends DM_BaseService
         }
         return false;
     }
+
+    public function getChalaniWardData($request){
+        $chalni = $this->model::with('fiscalYear')
+                                ->with('office')
+                                ->with('branch')
+                                ->with('documentType');
+        if($request->fiscal_year_id){
+            $chalni->where('fiscal_year_id', $request->fiscal_year_id);
+        }
+        if($request->office_id){
+            $chalni->where('office_id', $request->office_id);
+        }
+        if($request->branch_id){
+            $chalni->where('branch_id', $request->branch_id);
+        }
+        if($request->ward_id){
+            $chalni->where('ward_id', $request->ward_id);
+        }
+        if($request->chalani_no){
+            $chalni->where('chalani_no', $request->chalani_no);
+        }
+        // if($request->start_date) {
+        //     $chalni = $chalni->whereRaw("STR_TO_DATE(date, '%Y-%m-%d') >= STR_TO_DATE(?, '%Y-%m-%d')", [$request->start_date])
+        //          ->orWhereRaw("STR_TO_DATE(date, '%Y/%m/%d') >= STR_TO_DATE(?, '%Y/%m/%d')", [$request->start_date]);
+        // }
+        // if($request->end_date) {
+        //     $chalni = $chalni->whereRaw("STR_TO_DATE(date, '%Y-%m-%d') <= STR_TO_DATE(?, '%Y-%m-%d')", [$request->start_date])
+        //          ->orWhereRaw("STR_TO_DATE(date, '%Y/%m/%d') <= STR_TO_DATE(?, '%Y/%m/%d')", [$request->start_date]);
+        // }
+        if($request->type == 'chalani') {
+            return $chalni->where('is_darta', 0)->get();
+        }else if($request->type == 'darta') {
+            return $chalni->where('is_darta', 0)->get();
+        }
+
+    }
+
+    public function getDartaWardData($request){
+        $chalni = $this->model::with('fiscalYear')
+                                ->with('office')
+                                ->with('branch')
+                                ->with('documentType');
+        if($request->fiscal_year_id){
+            $chalni->where('fiscal_year_id', $request->fiscal_year_id);
+        }
+        if($request->office_id){
+            $chalni->where('office_id', $request->office_id);
+        }
+        if($request->branch_id){
+            $chalni->where('branch_id', $request->branch_id);
+        }
+        if($request->ward_id){
+            $chalni->where('ward_id', $request->ward_id);
+        }
+        if($request->chalani_no){
+            $chalni->where('darta_no', $request->chalani_no);
+        }
+        // if($request->start_date) {
+        //     $chalni = $chalni->whereRaw("STR_TO_DATE(date, '%Y-%m-%d') >= STR_TO_DATE(?, '%Y-%m-%d')", [$request->start_date])
+        //          ->orWhereRaw("STR_TO_DATE(date, '%Y/%m/%d') >= STR_TO_DATE(?, '%Y/%m/%d')", [$request->start_date]);
+        // }
+        // if($request->end_date) {
+        //     $chalni = $chalni->whereRaw("STR_TO_DATE(date, '%Y-%m-%d') <= STR_TO_DATE(?, '%Y-%m-%d')", [$request->start_date])
+        //          ->orWhereRaw("STR_TO_DATE(date, '%Y/%m/%d') <= STR_TO_DATE(?, '%Y/%m/%d')", [$request->start_date]);
+        // }
+        if($request->type == 'darta') {
+            return $chalni->where('is_darta', 1)->get();
+        }else if($request->type == 'darta') {
+            return $chalni->where('is_darta', 1)->get();
+        }
+
+    }
+    public function deleteImage($id){
+        $image = Image::find($id);
+        if($image){
+            parent::deleteImage($image->image_path);
+            $image->delete();
+            return true;
+        }
+        return false;
+    }
+
+    public function getStatusText($status)
+    {
+        switch ($status) {
+            case 1:
+                return 'Approved';
+            case 0:
+                return 'Pending';
+            default:
+                return 'Unknown';
+        }
+    }
+
+
 }

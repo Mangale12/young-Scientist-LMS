@@ -152,20 +152,24 @@ class DM_BaseService
     }
     public function deleteImage($imagePath) {
         // dd($imagePath);
-
-        // Assuming $imagePath is the path of the image to be deleted
-        if (file_exists(public_path($imagePath))) {
-            unlink(public_path($imagePath)); // Deletes the file
-            return true;
-        }else {
-            return false; // Returns false if the file does not exist
+        try {
+            // Assuming $imagePath is the path of the image to be deleted
+            if (file_exists(public_path($imagePath))) {
+                unlink(public_path($imagePath)); // Deletes the file
+                return true;
+            }else {
+                return false; // Returns false if the file does not exist
+            }
+        } catch (\Throwable $th) {
+            return false;
         }
+
     }
 
     function generateUniqueRandomNumber($table, $column) {
         do {
-            // Generate an 8-digit random number
-            $number = mt_rand(10000000, 99999999);
+            // Generate an 10-digit random number
+            $number = mt_rand(1000000000, 9999999999);
 
             // Check if the number already exists in the database
             $exists = DB::table($table)->where($column, $number)->exists();

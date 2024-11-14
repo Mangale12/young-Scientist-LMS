@@ -13,6 +13,9 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
+    protected $commands = [
+        Commands\MakeRepository::class,
+    ];
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
@@ -29,4 +32,5 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+    
 }

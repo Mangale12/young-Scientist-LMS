@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'कार्यालय')
+@section('title', 'grade')
 @section('css')
 @endsection
 
@@ -11,12 +11,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>कार्यालय</h1>
+            <h1>Grades</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">होम</a></li>
-              <li class="breadcrumb-item active">नयाँ कार्यालय</li>
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">New Grade</li>
             </ol>
           </div>
         </div>
@@ -31,7 +31,7 @@
           <div class="col-md-12">
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">नयाँ कार्यालय</h3>
+                <h3 class="card-title">New Grade</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -39,8 +39,8 @@
                 @csrf
                 <div class="card-body row">
                   <div class="form-group col-3">
-                    <label for="exampleInputEmail1">कार्यालयको नाम *</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="">
+                    <label for="exampleInputEmail1">Grade *</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Grade">
                     @if($errors->has('name'))
                     <p id="name-error" class="help-block text-danger" for="agricultural_id"><span>{{ $errors->first('name') }}</span></p>
                     @endif

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Services\UserService;
 use Yajra\DataTables\Facades\DataTables;
 class UserController extends DM_BaseController
@@ -37,8 +38,8 @@ class UserController extends DM_BaseController
                     $editButton = view('admin.section.buttons.button-edit', ['id' => $row->id, 'route' => route($this->base_route. '.edit', $row->id)]);
                     $deleteButton = view('admin.section.buttons.button-delete', ['id' => $row->id, 'route' => route($this->base_route. '.destroy', $row->id)]);
                     $viewtButton = view('admin.section.buttons.button-view', ['id' => $row->id, 'route' => route($this->base_route . '.show', $row->id)]);
-
-                    return $editButton.' '. ' ' . $viewtButton . ' ' . $deleteButton;
+                    $keyButton = view('admin.section.buttons.button-key', ['id' => $row->id, 'route' => route($this->base_route . '.change-passwords', $row->id)]);
+                    return $editButton.' '. ' ' . $viewtButton . ' ' . $keyButton . ' ' . $deleteButton;
                 })
                 ->rawColumns(['action']) // To render HTML content
                 ->make(true);
@@ -81,6 +82,32 @@ class UserController extends DM_BaseController
             return redirect()->back();
         }
     }
+    public function changePassword($id = null) {
+        if($id) {
+            $data['rows'] = $this->service->getById($id);
+            return view(parent::loadView($this->view_path.'.change-passwords'), compact('data'));
+        }else{
+            $data['rows'] = auth()->user();
+            return view(parent::loadView($this->view_path.'.change-password'), compact('data'));
+        }
+    }
+    public function updatePasswords(UpdatePasswordRequest $request, $id) {
+        $this->service->updatePassword($request->all(), $id);
+        return redirect()->route($this->base_route.'.index')->with('success', 'Password updated successfully.');
+    }
+    public function updatePassword(UpdatePasswordRequest $request, $id)
+    {
+        $response = $this->service->updatePassword($request, $id);
+
+        // If there is an error (like wrong old password), return the response with error
+        if ($response instanceof \Illuminate\Http\RedirectResponse) {
+            return $response;
+        }
+
+        // If everything is okay, redirect with a success message
+        return redirect()->route($this->base_route . '.index')->with('success', 'Password updated successfully.');
+    }
+
     public function destroy($id){
         $this->service->destroy($id);
         return redirect()->route($this->base_route.'.index')->with('success', 'User deleted successfully.');

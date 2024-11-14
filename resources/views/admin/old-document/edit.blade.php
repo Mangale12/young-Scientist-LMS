@@ -109,7 +109,7 @@
                     <label for="remarks">कागजातको अपलोड *</label>
 
                     <!-- Display existing images if any -->
-                    @if($data['rows']->chalaniImages->isNotEmpty())
+                    @if($data['rows']->images->isNotEmpty())
                         @foreach($data['rows']->chalaniImages as $key => $image)
                             <img src="{{ asset($image->image_path) }}" alt="{{ $data['rows']->name }}" class="img-thumbnail mb-2" style="width: 100px;">
                         @endforeach

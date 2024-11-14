@@ -14,19 +14,11 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->route('id'), // Ignore unique validation on update
             'password' => $this->isMethod('post') ? 'required|string|min:6' : 'nullable|string|min:6',
-            'status_id' => 'required|integer',
-            // 'status' => 'required|string',
-            'ward_id' => 'required|integer',
-            'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
             'phone' => 'required|numeric',
-            'branch_id' => 'required|integer',
-            'position_id' => 'required|integer',
-            // 'is_super_admin' => 'required|boolean',
-            'profile_img' => 'nullable|image|max:2048',
+            'teacher_id' => 'required',
         ];
     }
 

@@ -48,15 +48,15 @@
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="{{ route('admin.user.change-password', ['id'=>null]) }}">
                 <i class="fas fa-user mr-1"></i>
               पासवर्ड परिवर्तन गर्नुहोस्
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="{{ route('admin.setting.index') }}">
                 <i class="fas fa-user mr-1"></i>
-              Site Setting
+                साइट सेटिङ
             </a>
           </li>
         </ul>

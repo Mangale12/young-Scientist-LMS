@@ -4,6 +4,8 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\UpdatePasswordRequest;
+use Illuminate\Support\Facades\Hash;
 class UserService extends DM_BaseService
 {
     // Your business logic here
@@ -83,6 +85,25 @@ class UserService extends DM_BaseService
         } catch (\Throwable $th) {
             return false;
         }
+    }
+
+    public function updatePasswords(UpdatePasswordRequest $request, $id) {
+        $record = $this->getById($id);
+        $record->password = bcrypt($password);
+        $record->save();
+    }
+    public function updatePassword(UpdatePasswordRequest $request, $id) {
+        $record = $this->getById($id);
+         // Check if the old password matches
+        if (!Hash::check($request->old_password, $record->password)) {
+            return back()->withErrors(['old_password' => 'पुरानो पासवर्ड मिलेन।']);
+        }
+
+        $record->password = bcrypt($request->password);
+        $record->save();
+
+        return back()->with('success', 'पासवर्ड सफलतापूर्वक परिवर्तन गरियो।');
+
     }
 
     public function destroy($id){

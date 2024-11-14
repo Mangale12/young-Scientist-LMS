@@ -39,7 +39,7 @@
     <strong>Copyright &copy; 2024 <a>Softech</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
+      <b>Version</b> {{ env('APP_VERSION') }}
     </div>
   </footer>
 </div>

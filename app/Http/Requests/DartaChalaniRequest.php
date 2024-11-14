@@ -26,8 +26,8 @@ class DartaChalaniRequest extends FormRequest
             'is_darta' => 'required|boolean',
 
             // Conditional validation: darta_no is required if is_darta is true, and chalani_no if false
-            'darta_no' => 'required_if:is_darta,true|nullable|string|max:255',
-            'chalani_no' => 'required_if:is_darta,false|nullable|string|max:255',
+            'darta_no' => 'required_if:is_darta,true|nullable|numeric|max:255',
+            'chalani_no' => 'required_if:is_darta,false|nullable|numeric|max:255',
         ];
     }
 
@@ -47,6 +47,8 @@ class DartaChalaniRequest extends FormRequest
 
             // Custom Nepali messages for conditional validation
             'darta_no.required_if' => 'दर्ता गर्दा दर्ता नम्बर आवश्यक छ।',
+            'darta_no.numeric' => 'दर्ता गर्दा दर्ता नम्बर अंक हुनुपर्छ।',
+            'chalani_no.numeric' => 'चलानी गर्दा चलानी नम्बर अंक हुनुपर्छ।',
             'chalani_no.required_if' => 'चलानी गर्दा चलानी नम्बर आवश्यक छ।',
         ];
     }

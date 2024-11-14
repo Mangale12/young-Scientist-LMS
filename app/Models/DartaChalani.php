@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class DartaChalani extends Model
 {
+    use SoftDeletes;
     use HasFactory;
     public function fiscalYear(){
         return $this->belongsTo(FiscalYear::class);
@@ -23,6 +26,6 @@ class DartaChalani extends Model
     }
 
     public function images(){
-        return $this->hasMany(Image::class, 'darta_id');
+        return $this->hasMany(Image::class);
     }
 }

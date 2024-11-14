@@ -20,18 +20,17 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'username',
-        'password',
-        'email',
-        'status_id',
-        'status',
-        'ward_id',
         'name',
-        'last_name',
+        'email',
+        'teacher_id',
+        'password',
         'phone',
-        'branch_id',
-        'position_id',
-        'is_super_admin'
+        'unique_id',
+        'profile',
+        'student_id',
+        'is_approved',
+        'role',
+        'status',
     ];
 
     /**
@@ -53,17 +52,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function userStatus(){
-        return $this->belongsTo(Status::class);
-    }
-    public function ward(){
-        return $this->belongsTo(Ward::class);
-    }
-    public function branch(){
-        return $this->belongsTo(Branch::class);
-    }
-    public function position(){
-        return $this->belongsTo(Position::class);
-    }
+   public function student(){
+    return $this->hasOne(Student::class,'student_id','id');
+   }
+   
+   public function teacher(){
+    return $this->hasOne(Teacher::class,'teacher_id','id');
+   }
 
 }

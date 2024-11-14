@@ -133,19 +133,27 @@
                   @endif
                 </div>
 
-                <div class="form-group col-3">
-                  <label for="image">कागजातको अपलोड *</label>
-                  <div class="input-group mb-3">
-                    <input type="file" class="form-control" id="image" name="image[]" accept="image/*">
+                <div class="form-group col-6">
+                    <label for="image">कागजातको अपलोड *</label>
+                    <div class="input-group mb-3">
+                      <select name="document[0][document_type]" id="document-type" class="form-control mr-1">
+                          <option selected disabled>कागजातको प्रकार छान्न्नुहोस </option>
+                          @foreach($data['documentTypes'] as $documentType)
+                          <option value="{{$documentType->id }}" {{ old('document_type_id') == $documentType->id ? 'selected' : '' }}>{{ $documentType->name }}</option>
+                          @endforeach
+                      </select>
+                      <input type="file" class="form-control" id="image" name="document[0][image]" accept="image/*">
+                    </div>
+
+
+                    <div id="fileInputs"></div>
+                    <button type="button" class="btn btn-success" id="addMoreButton">
+                      <i class="fa fa-plus"></i> थप्नुस् थप तस्विरहरू
+                    </button>
+                    @if($errors->has('image'))
+                    <p id="image-error" class="help-block text-danger"><span>{{ $errors->first('image') }}</span></p>
+                    @endif
                   </div>
-                  <div id="fileInputs"></div>
-                  <button type="button" class="btn btn-success" id="addMoreButton">
-                    <i class="fa fa-plus"></i> थप्नुस् थप तस्विरहरू
-                  </button>
-                  @if($errors->has('image'))
-                  <p id="image-error" class="help-block text-danger"><span>{{ $errors->first('image') }}</span></p>
-                  @endif
-                </div>
 
               </div>
               <!-- /.card-body -->
@@ -170,17 +178,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script src="{{ asset('assets/cms/plugin/nepali.datepicker.v3.7/js/nepali.datepicker.v3.7.min.js')}}" type="text/javascript"></script>
 <script>
-    $('#date').nepaliDatePicker({
-            dateFormat: 'YYYY-MM-DD',
+    $(document).ready(function() {
+        // Initialize Nepali date picker
+        $('#date').nepaliDatePicker({
+            dateFormat: 'YYYY/MM/DD',
             closeOnDateSelect: true,
         });
 
+        let inputCount = 1;
+
         // Add more file inputs dynamically
-        document.getElementById('addMoreButton').addEventListener('click', function () {
-            var fileInput = document.createElement('div');
-            fileInput.classList.add('input-group', 'mb-3');
-            fileInput.innerHTML = '<input type="file" class="form-control" name="image[]" accept="image/*">';
-            document.getElementById('fileInputs').appendChild(fileInput);
+        $('#addMoreButton').on('click', function () {
+            var fileInput = `<div class="input-group mb-3">
+                                <select name="document[${inputCount}][document_type]" id="document-type-id" class="form-control mr-1">
+                                    <option selected disabled>कागजातको प्रकार छान्न्नुहोस </option>
+                                    @foreach($data['documentTypes'] as $documentType)
+                                    <option value="{{$documentType->id }}" {{ old('document_type_id') == $documentType->id ? 'selected' : '' }}>{{ $documentType->name }}</option>
+                                    @endforeach
+                                </select>
+                                <input type="file" name= "document[${inputCount}][image]" class="form-control" accept="image/*">
+                                <button class="btn btn-danger btn-sm remove-document" data-toggle="tooltip" data-original-title="Delete" style="cursor:pointer;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                             </div>`;
+
+            $('#fileInputs').append(fileInput); // Add the new input field
+            inputCount++; // Increment the counter for the next input
         });
+
+        // Handle the removal of file inputs dynamically
+        $('#fileInputs').on('click', '.remove-document', function (event) {
+            event.preventDefault();
+            $(this).closest('.input-group').remove(); // Remove the parent div of the clicked remove button
+        });
+    });
 </script>
 @endsection
