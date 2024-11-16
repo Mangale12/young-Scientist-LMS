@@ -45,15 +45,9 @@
                         <tr>
                             <th>#</th>
                             <th>Title</th>
-                            <th>Video</th>
-                            <th>Thumbnail</th>
-                            <th>Cost</th>
-                            <th>Chapter Count</th>
-                            <th>Teachers</th>
-                            <th>Student Count</th>
-                            <th>Total Enrolled</th>
-                            <th>Added Date</th>
-                            <th>Status</th>
+                            <th>Course</th>
+                            <th>Assignment</th>
+                            
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -101,15 +95,8 @@
                     }
                 },
                 { data: 'title', name: 'title' },
-                { data: 'video_link', name: 'video_link' },
-                { data: 'thumbnail', name: 'thumbnail' },
-                { data: 'cost', name: 'cost' },
-                { data: 'cost', name: 'cost' },
-                { data: 'cost', name: 'cost' },
-                { data: 'description', name: 'description' },
-                { data: 'cost', name: 'cost' },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'status', name: 'status' },
+                { data: 'course_id', name: 'video_link' },
+                { data: 'chapter_category_id', name: 'chapter_category_id' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

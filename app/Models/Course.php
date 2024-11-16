@@ -24,4 +24,7 @@ class Course extends Model
         ''
     ];
     protected $dates = ['deleted_at'];
+    public function chapter(){
+        return $this->hasMany(Chapter::class, 'course_id')->with('chapterCategory');
+    }
 }

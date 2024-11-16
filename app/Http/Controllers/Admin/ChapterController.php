@@ -8,11 +8,11 @@ use App\Repositories\ChapterRepositoryInterface;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\ChapterRequest;
 
-class ChapterController extends Controller
+class ChapterController extends DM_BaseController
 {
     protected $repository;
     protected $panel = 'Chapter';
-    protected $base_route = 'admin.chapter';
+    protected $base_route = 'admin.chapters';
     protected $view_path = 'admin.chapter';
 
     public function __construct(ChapterRepositoryInterface $repository){
@@ -48,9 +48,10 @@ class ChapterController extends Controller
         return view(parent::loadView($this->view_path.'.view'));
     }
     public function create(){
-        return view(parent::loadView($this->view_path.'.create'));
+        $data['chapterCategories'] = $this->repository->getChapterCategory();
+        return view(parent::loadView($this->view_path.'.create'), compact('data'));
     }
-    public function store(CourseRequest $request){
+    public function store(ChapterRequest $request){
         if($this->repository->create($request)){
             session()->flash('alert-success', 'Data Created Successsfully !');
             return redirect()->route($this->base_route.'.index');
@@ -60,11 +61,13 @@ class ChapterController extends Controller
         }
     }
     public function edit($id){
+        $data['chapterCategories'] = $this->repository->getChapterCategory();
         $data['row'] = $this->repository->getById($id);
         return view(parent::loadView($this->view_path.'.edit'), compact('data'));
     }
-    public function update(CourseRequest $request, $id){
+    public function update(ChapterRequest $request, $id){
         if($this->repository->update($id, $request)){
+            return response(true);
             session()->flash('alert-success', 'Data Updated Successfully!');
             return redirect()->route($this->base_route.'.index');
         }else{

@@ -11,6 +11,9 @@
                     return ChapterCategory::all();
                 }
 
+                public function getActiveData(){
+                    return ChapterCategory::where('status', 1)->get();  // Assuming 'active' status is defined in the ChapterCategory model.
+                }
                 public function getById($id)
                 {
                     return ChapterCategory::findOrFail($id);

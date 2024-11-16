@@ -20,7 +20,8 @@ class CourseController extends DM_BaseController
     }
 
     public function index(){
-        return view(parent::loadView($this->view_path.'.index'));
+        $data['chapterCategories'] = $this->repository->getChapterCategory();
+        return view(parent::loadView($this->view_path.'.index'), compact('data'));
     }
 
     // Fetch data for the DataTable
@@ -73,10 +74,31 @@ class CourseController extends DM_BaseController
         }
     }
 
-    public function chapters($id){
-        $data['course_id'] = $id;
-        return view(parent::loadView($this->view_path.'.chapters'), compact('data'));
+    // public function chapters($id){
+    //     $data['chapters'] = $this->repository->getById($id)->chapter;
+    //     return response($data['chapters']);
+    // }
+    public function chapters($id)
+    {
+        $chapters = $this->repository->getById($id)->chapter;
+
+        // Transform the chapters to handle null or missing values
+        $transformedChapters = $chapters->map(function ($chapter) {
+            return [
+                'id' => $chapter->id,
+                'title' => $chapter->title,
+                'chapter_category' => [
+                    'id' => $chapter->chapterCategory->id ?? 'N/A',
+                    'name' => $chapter->chapterCategory->name ?? 'N/A',
+                ],
+                'description' => $chapter->description ?? '',
+                'assignment' => $chapter->assignment->description ?? '' // Ensure assignment is not null
+            ];
+        });
+
+        return response($transformedChapters);
     }
+
     public function destroy($id){
         $this->repository->delete($id);
         session()->flash('alert-success', 'Data Deleted Successfully!');

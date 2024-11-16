@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+
 
 class ChapterRequest extends FormRequest
 {
@@ -21,13 +24,13 @@ class ChapterRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
+        \Log::info($request->all()); // Log incoming data
         return [
-            'title' => 'required|max_length:255',
+            'title' => 'required|max:255',
             'description' => 'required',
             'chapter_category_id' => 'required|exists:chapter_categories,id',
-            'course_id' => 'required|exists:courses,id',
             
         ];
     }

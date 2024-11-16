@@ -234,7 +234,7 @@ Route::group(['prefix' => 'course',             'as' => 'course.'], function () 
     Route::post('/',                                   [App\Http\Controllers\Admin\CourseController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\CourseController::class, 'edit'])->name('edit');
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\CourseController::class, 'update'])->name('update');
-    Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\CourseController::class, 'chapters'])->name('chapters');
+    Route::get('/chapters/{id}',                       [App\Http\Controllers\Admin\CourseController::class, 'chapters'])->name('chapters');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('destroy');
 });
 
@@ -245,7 +245,7 @@ Route::group(['prefix' => 'chapters',             'as' => 'chapters.'], function
     Route::get('/create',                              [App\Http\Controllers\Admin\ChapterController::class, 'create'])->name('create');
     Route::post('/',                                   [App\Http\Controllers\Admin\ChapterController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\ChapterController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\ChapterController::class, 'update'])->name('update');
+    Route::post('/update/{id}',                         [App\Http\Controllers\Admin\ChapterController::class, 'update'])->name('update');
     Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\ChapterController::class, 'chapters'])->name('chapters');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\ChapterController::class, 'destroy'])->name('destroy');
 });

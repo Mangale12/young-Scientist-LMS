@@ -21,7 +21,21 @@ class Chapter extends Model
         'status', 
         'thumbnail', 
         'chapter_material',
-        'chapter_cataegory_id',
+        'chapter_category_id',
     ];
+
+    public function assignment(){
+        return $this->hasOne(Assignment::class);
+    }
+    public function course(){
+        return $this->belongsTo(Course::class);
+    }
+    public function chapterCategory(){
+        return $this->belongsTo(ChapterCategory::class);
+    }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+    
 
 }

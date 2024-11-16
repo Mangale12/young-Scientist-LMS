@@ -18,7 +18,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">New {{$_panel}}</li>
+              <li class="breadcrumb-item active">Edit {{$_panel}}</li>
             </ol>
           </div>
         </div>
@@ -26,7 +26,7 @@
     </section>
 
   <!-- Main content -->
-<section class="content">
+  <section class="content">
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
@@ -36,12 +36,13 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="{{ route($_base_route.'.update', ['id'=>$data['row']->id]) }}" method="POST" enctype='multipart/form-data'>
+            <form action="{{ route($_base_route.'.update', ['id'=>$data['row']]) }}" method="POST" enctype='multipart/form-data'>
               @csrf
               @method('put')
               <div class="card-body row">
+                <input type="hidden" name="course_id" value="1">
                 <div class="form-group col-12">
-                  <label for="title">Course Title *</label>
+                  <label for="title">Title *</label>
                   <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $data['row']->title) }}" placeholder="Course Title">
                   @if($errors->has('title'))
                   <p id="title-error" class="help-block text-danger"><span>{{ $errors->first('title') }}</span></p>
@@ -49,10 +50,15 @@
                 </div>
 
                 <div class="form-group col-12">
-                  <label for="video">Intro Video *</label>
-                  <input type="url" class="form-control" id="video" name="video_link" value="{{ old('video_ling', $data['row']->video_link) }}" placeholder="Youtube Video Link" >
-                  @if($errors->has('video_link'))
-                  <p id="video-error" class="help-block text-danger"><span>{{ $errors->first('video_link') }}</span></p>
+                  <label for="chapter_category_id">Chapter Category *</label>
+                  <select class="form-control" name="chapter_category_id" id="chapter_category_id">
+                    <option selected disabled>Select Chapter Category</option>
+                    @foreach($data['chapterCategories'] as $chapterCategory)
+                    <option value="{{$chapterCategory->id }}" {{ old('chapter_category_id', $data['row']->chapter_category_id) == $chapterCategory->id?'selected' : '' }}>{{ $chapterCategory->name }}</option>
+                    @endforeach
+                  </select>
+                  @if($errors->has('chapter_category_id'))
+                  <p id="chapter_category_id-error" class="help-block text-danger"><span>{{ $errors->first('chapter_category_id') }}</span></p>
                   @endif
                 </div>
 
@@ -64,45 +70,45 @@
                       <span>{{ $errors->first('description') }}</span>
                   </p>
                   @endif
-              </div>
+                </div>
               
-              <div class="form-group col-12">
-                  <label for="course_material">Materials *</label>
-                  <textarea name="course_material" id="course_material" class="form-control course_material">{{ old('course_material', $data['row']->course_material) }}</textarea>
-                  @if($errors->has('course_material'))
-                  <p id="course_material-error" class="help-block text-danger">
-                      <span>{{ $errors->first('course_material') }}</span>
-                  </p>
-                  @endif
-              </div>
+                <div class="form-group col-12">
+                    <label for="assignment">Assignement *</label>
+                    <textarea name="assignment" id="assignment" class="form-control assignment">{{ old('assignment', $data['row']->assignment ? $data['row']->assignment->description : null) }}</textarea>
+                    @if($errors->has('assignment'))
+                    <p id="assignment-error" class="help-block text-danger">
+                        <span>{{ $errors->first('assignment') }}</span>
+                    </p>
+                    @endif
+                </div>
               
-              @include('admin.section.status-edit')
+                {{-- @include('admin.section.status-create') --}}
               
-              <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
               </div>
-              </form>
-              </div>
-              <!-- /.card -->
-              </div>
-              </div>
-              <!-- /.row -->
-              </div>
-              </section>
-              <!-- /.content -->
-              </div>
-              </div>
+            </form>
+            <!-- /.card -->
+          </div>
+        </div>
+        <!-- /.row -->
+      </div>
+  </section>
+    <!-- /.content -->
+    </div>
+  </div>
               
-              @endsection
-              
-              @section('scripts')
-              <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-             <script>
-              // Initialize the rich text editor
-              var editor1 = new RichTextEditor("#description");
-              var editor2 = new RichTextEditor("#course_material");
-              
-          </script>
-             
-              @endsection
-              
+@endsection
+  
+  @section('scripts')
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+  <script>
+  // Initialize the rich text editor
+  var editor1 = new RichTextEditor("#description");
+  var editor2 = new RichTextEditor("#assignment");
+  
+</script>
+  
+  @endsection
+  

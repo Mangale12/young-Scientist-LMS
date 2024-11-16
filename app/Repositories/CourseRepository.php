@@ -14,8 +14,10 @@
                 protected $file   = 'file';
                 protected $prefix_path_image = '/upload_file/course/';
                 protected $prefix_path_file = '/upload_file/course/file/';
-                public function __construct()
+                protected $chapterCategory;
+                public function __construct(ChapterCategoryRepositoryInterface $chapterCategory)
                 {
+                    $this->chapterCategory = $chapterCategory;
                     $this->folder_path_image = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
                     $this->folder_path_file = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR;
                 }
@@ -101,6 +103,10 @@
                         Log::info($th);
                         return false; 
                     }
+                }
+
+                public function getChapterCategory(){
+                    return $this->chapterCategory->getActiveData();
                 }
 
                 public function delete($id)
