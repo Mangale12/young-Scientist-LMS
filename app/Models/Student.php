@@ -19,4 +19,8 @@ class Student extends Model
             'parent_phone', 
             'parent_email'
         ];
+
+        public function user(){
+            return $this->belongsTo(User::class);
+        }
 }

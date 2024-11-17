@@ -5,6 +5,7 @@
             interface SchoolRepositoryInterface
             {
                 public function getAll();
+                public function getActiveSchool();
                 public function getById($id);
                 public function create(SchoolRequest $request);
                 public function update($id, SchoolRequest $request);

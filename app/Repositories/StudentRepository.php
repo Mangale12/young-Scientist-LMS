@@ -12,7 +12,7 @@
             {
                 public function getAll()
                 {
-                    return Student::all();
+                    return Student::whereHas('user')->with('user')->get();
                 }
 
                 public function getById($id)

@@ -82,6 +82,16 @@
               </p>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a href="{{route('admin.course-resource.index')}}" class="nav-link {{ ($_panel == 'Course Resource') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Course Resource
+              </p>
+            </a>
+          </li>
+
           <li class="nav-item">
             <a href="{{route('admin.chapter-category.index')}}" class="nav-link {{ ($_panel == 'Chapter Category') ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
@@ -102,69 +112,26 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ route('admin.ward.index') }}" class="nav-link {{ $_panel == 'Ward' ? 'active' : '' }}">
-              <i class="nav-icon fas fa-tree"></i>
+            <a href="{{ route('admin.teachers.index') }}" class="nav-link {{ ($_panel == 'Teacher') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-copy"></i>
               <p>
-                वार्ड
+                Teacher
               </p>
             </a>
 
           </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.office.index') }}" class="nav-link {{ $_panel == 'Office' ? 'active' : '' }}">
-              <i class="nav-icon fas fa-edit"></i>
-              <p>
-                कार्यालय
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.document-type.index') }}" class="nav-link {{ $_panel == 'Document Type' ? 'active' : '' }}">
-              <i class="nav-icon fas fa-table"></i>
-              <p>
-                कागजातको प्रकार
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.old-document.index') }}" class="nav-link {{ $_panel == 'Old Document' ? 'active' : '' }}">
-              <i class="nav-icon fas fa-table"></i>
-              <p>
-                पुरानो कागजात
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.status.index') }}" class="nav-link {{ $_panel == 'Status' ? 'active' : '' }}">
-              <i class="nav-icon far fa-calendar-alt"></i>
-              <p>
-                स्थिति
-                <span class="badge badge-info right"></span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.position.index') }}" class="nav-link {{ $_panel == 'Position' ? 'active' : '' }}">
-              <i class="nav-icon far fa-image"></i>
-              <p>
-                पद
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-            <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="nav-icon fas fa-columns"></i>
-                <p>
-                  लग आउट
-                </p>
-            </a>
-            <a href="pages/kanban.html" >
 
+          <li class="nav-item">
+            <a href="{{ route('admin.students.index') }}" class="nav-link {{ ($_panel == 'Stident') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Student
+              </p>
             </a>
+
           </li>
+
+          
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon far fa-envelope"></i>

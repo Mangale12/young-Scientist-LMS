@@ -4,30 +4,27 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Repositories\CourseRepositoryInterface;
-use App\Http\Requests\CourseRequest;
+use App\Repositories\CourseResourceRepositoryInterface;
+use App\Http\Requests\CourseResourceRequest;
 use Yajra\DataTables\Facades\DataTables;
 
-class CourseController extends DM_BaseController
+class CourseResourceController extends DM_BaseController
 {
     protected $repository;
-    protected $panel = 'Course';
-    protected $base_route = 'admin.course';
-    protected $view_path = 'admin.course';
-
-    public function __construct(CourseRepositoryInterface $repository){
+    protected $panel = 'Course Resource'; 
+    protected $base_route = 'admin.course-resource';
+    protected $view_path = 'admin.course-resource';
+    public function __construct(CourseResourceRepositoryInterface $repository){
         $this->repository = $repository;
     }
 
     public function index(){
-        $data['chapterCategories'] = $this->repository->getChapterCategory();
-        return view(parent::loadView($this->view_path.'.index'), compact('data'));
+        return view(parent::loadView($this->view_path.'.index'));
     }
 
     // Fetch data for the DataTable
     public function getData(Request $request)
     {
-
         if ($request->ajax()) {
             $data = $this->repository->getAll();
             return DataTables::of($data)
@@ -40,9 +37,6 @@ class CourseController extends DM_BaseController
                 ->addColumn('description', function ($row) {
                     return $row->description; // return the raw description content
                 })
-                ->addColumn('teacher', function ($row) {
-                    return view('admin.section.assign-teacher', ['id'=>$row->id, 'teachers' => $this->repository->getAllTeacher()]); // return the raw description content
-                })
                 ->rawColumns(['description', 'action']) // Render both columns as HTML
                 ->make(true);
         }
@@ -53,10 +47,9 @@ class CourseController extends DM_BaseController
         return view(parent::loadView($this->view_path.'.view'));
     }
     public function create(){
-        $data['course_resources'] = $this->repository->getCourseResource();
-        return view(parent::loadView($this->view_path.'.create'), compact('data'));
+        return view(parent::loadView($this->view_path.'.create'));
     }
-    public function store(CourseRequest $request){
+    public function store(CourseResourceRequest $request){
         if($this->repository->create($request)){
             session()->flash('alert-success', 'Data Created Successsfully !');
             return redirect()->route($this->base_route.'.index');
@@ -67,11 +60,9 @@ class CourseController extends DM_BaseController
     }
     public function edit($id){
         $data['row'] = $this->repository->getById($id);
-        $data['course_resources'] = $this->repository->getCourseResource();
-        $data['selected-courseresources'] = $data['row']->courseResources->pluck('id')->toArray();
         return view(parent::loadView($this->view_path.'.edit'), compact('data'));
     }
-    public function update(CourseRequest $request, $id){
+    public function update(CourseResourceRequest $request, $id){
         if($this->repository->update($id, $request)){
             session()->flash('alert-success', 'Data Updated Successfully!');
             return redirect()->route($this->base_route.'.index');

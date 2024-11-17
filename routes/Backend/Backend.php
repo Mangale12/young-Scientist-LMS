@@ -238,6 +238,18 @@ Route::group(['prefix' => 'course',             'as' => 'course.'], function () 
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('destroy');
 });
 
+// Course Resource Route
+Route::group(['prefix' => 'course-resource',             'as' => 'course-resource.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\CourseResourceController::class, 'index'])->name('index');
+    Route::get('/data/all',                            [App\Http\Controllers\Admin\CourseResourceController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\CourseResourceController::class, 'create'])->name('create');
+    Route::post('/',                                   [App\Http\Controllers\Admin\CourseResourceController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\CourseResourceController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}',                         [App\Http\Controllers\Admin\CourseResourceController::class, 'update'])->name('update');
+    Route::get('/chapters/{id}',                       [App\Http\Controllers\Admin\CourseResourceController::class, 'chapters'])->name('chapters');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\CourseResourceController::class, 'destroy'])->name('destroy');
+});
+
 // Chapter Route
 Route::group(['prefix' => 'chapters',             'as' => 'chapters.'], function () {
     Route::get('/',                                    [App\Http\Controllers\Admin\ChapterController::class, 'index'])->name('index');
@@ -248,6 +260,30 @@ Route::group(['prefix' => 'chapters',             'as' => 'chapters.'], function
     Route::post('/update/{id}',                         [App\Http\Controllers\Admin\ChapterController::class, 'update'])->name('update');
     Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\ChapterController::class, 'chapters'])->name('chapters');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\ChapterController::class, 'destroy'])->name('destroy');
+});
+
+// Teacher Route
+Route::group(['prefix' => 'teachers',             'as' => 'teachers.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\TeacherController::class, 'index'])->name('index');
+    Route::get('/data/all',                            [App\Http\Controllers\Admin\TeacherController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\TeacherController::class, 'create'])->name('create');
+    Route::post('/',                                   [App\Http\Controllers\Admin\TeacherController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\TeacherController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}',                         [App\Http\Controllers\Admin\TeacherController::class, 'update'])->name('update');
+    Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\TeacherController::class, 'chapters'])->name('chapters');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\TeacherController::class, 'destroy'])->name('destroy');
+});
+
+// Student Route
+Route::group(['prefix' => 'students',             'as' => 'students.'], function () {
+    Route::get('/',                                    [App\Http\Controllers\Admin\StudentController::class, 'index'])->name('index');
+    Route::get('/data/all',                            [App\Http\Controllers\Admin\StudentController::class, 'getData'])->name('data');
+    Route::get('/create',                              [App\Http\Controllers\Admin\StudentController::class, 'create'])->name('create');
+    Route::post('/',                                   [App\Http\Controllers\Admin\StudentController::class, 'store'])->name('store');
+    Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\StudentController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}',                         [App\Http\Controllers\Admin\StudentController::class, 'update'])->name('update');
+    Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\StudentController::class, 'chapters'])->name('chapters');
+    Route::delete('/{id}',                             [App\Http\Controllers\Admin\StudentController::class, 'destroy'])->name('destroy');
 });
 
 // Chapter Category Route

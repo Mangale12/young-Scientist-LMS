@@ -11,6 +11,6 @@ class Teacher extends Model
     protected $fillable = ['teacher_id','subject_expert', 'user_id'];
 
     public function user(){
-        return $this->belongsTo(User::class, 'teacher_id');
+        return $this->belongsTo(User::class);
     }
 }

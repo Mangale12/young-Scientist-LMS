@@ -214,7 +214,7 @@
                 { data: 'thumbnail', name: 'thumbnail' },
                 { data: 'cost', name: 'cost' },
                 { data: 'cost', name: 'cost' },
-                { data: 'cost', name: 'cost' },
+                { data: 'teacher', name: 'teacher' },
                 { data: 'description', name: 'description' },
                 { data: 'cost', name: 'cost' },
                 { data: 'created_at', name: 'created_at' },

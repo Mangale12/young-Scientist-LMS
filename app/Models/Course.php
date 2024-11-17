@@ -27,4 +27,10 @@ class Course extends Model
     public function chapter(){
         return $this->hasMany(Chapter::class, 'course_id')->with('chapterCategory');
     }
+
+    public function courseResources()
+    {
+        return $this->belongsToMany(CourseResource::class, 'course_course_resources');
+    }
+
 }

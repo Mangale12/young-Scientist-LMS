@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('title', $_panel)
 @section('css')
+<link rel="stylesheet" href="{{asset('assets/cms/assets/select2/css/select2.min.css')}}">
+
 <link rel="stylesheet" href="{{asset('assets/richtexteditor/richtexteditor/rte_theme_default.css')}}" />
 <script type="text/javascript" src="{{asset('assets/richtexteditor/richtexteditor/rte.js')}}"></script>
 <script type="text/javascript" src='{{asset("assets/richtexteditor/richtexteditor/plugins/all_plugins.js")}}'></script>
@@ -75,6 +77,23 @@
                   </p>
                   @endif
               </div>
+              <div class="form-group col-12">
+                <label for="course_resource_id">Course Resource *</label>
+                <select name="course_resource_id[]" id="course_resource_id" class="form-control select-two" multiple>
+                    @foreach($data['course_resources'] as $course_resource)
+                        <option value="{{ $course_resource->id }}"
+                            {{ (is_array(old('course_resource_id', $data['selected-courseresources'])) && in_array($course_resource->id, old('course_resource_id', $data['selected-courseresources']))) ? 'selected' : '' }}>
+                            {{ $course_resource->title }}
+                        </option>
+                    @endforeach
+                </select>
+                @if($errors->has('course_resource_id'))
+                    <p id="course_resource_id-error" class="help-block text-danger">
+                        <span>{{ $errors->first('course_resource_id') }}</span>
+                    </p>
+                @endif                
+            </div>
+            
               
               @include('admin.section.status-edit')
               
@@ -96,11 +115,17 @@
               @endsection
               
               @section('scripts')
+              <script src="{{asset('assets/cms/assets/select2/js/select2.min.js')}}"></script>
               <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
              <script>
               // Initialize the rich text editor
               var editor1 = new RichTextEditor("#description");
               var editor2 = new RichTextEditor("#course_material");
+              $(document).ready(function () {
+                  $('.select-two').select2({
+                      allowClear: true // Allows clearing the selection
+                  });
+              });
               
           </script>
              

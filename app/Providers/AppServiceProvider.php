@@ -25,6 +25,8 @@ use App\Repositories\ChapterCategoryRepository;
 use App\Repositories\ChapterCategoryRepositoryInterface;
 use App\Repositories\ChapterRepository;
 use App\Repositories\ChapterRepositoryInterface;
+use App\Repositories\CourseResourceRepository;
+use App\Repositories\CourseResourceRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
         $this->app->bind(ChapterCategoryRepositoryInterface::class, ChapterCategoryRepository::class);
         $this->app->bind(ChapterRepositoryInterface::class, ChapterRepository::class);
+        $this->app->bind(CourseResourceRepositoryInterface::class, CourseResourceRepository::class);
     }
 
     /**

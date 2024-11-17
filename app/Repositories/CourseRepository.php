@@ -4,20 +4,28 @@
             use App\Http\Requests\CourseRequest;
             use App\Models\Course;
             use Illuminate\Support\Facades\Log;
-            
-
+            use DB;
+            use App\Models\CourseCourseResource;
             class CourseRepository extends DM_BaseRepository implements CourseRepositoryInterface
             {
                 protected $folder_path_image;
                 protected $folder_path_file;
-                protected $folder = 'blog';
+                protected $folder = 'course';
                 protected $file   = 'file';
                 protected $prefix_path_image = '/upload_file/course/';
                 protected $prefix_path_file = '/upload_file/course/file/';
                 protected $chapterCategory;
-                public function __construct(ChapterCategoryRepositoryInterface $chapterCategory)
+                protected $courseResourceRepository;
+                private $courseCourseResource;
+                protected $schoolRepository;
+                protected $teacherRepository;
+                public function __construct(ChapterCategoryRepositoryInterface $chapterCategory, CourseResourceRepositoryInterface $courseResourceRepository, CourseCourseResource $courseCourseResource, TeacherRepositoryInterface $teacherResourceRepository, SchoolRepositoryInterface $schoolRepository)
                 {
                     $this->chapterCategory = $chapterCategory;
+                    $this->courseCourseResource = $courseCourseResource;
+                    $this->teacherRepository = $teacherResourceRepository;
+                    $this->schoolRepository = $schoolRepository;
+                    $this->courseResourceRepository = $courseResourceRepository;
                     $this->folder_path_image = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
                     $this->folder_path_file = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR;
                 }
@@ -27,7 +35,9 @@
                 {
                     return Course::all();
                 }
-
+                public function getCourseResource(){
+                    return $this->courseResourceRepository->getActiveData();
+                }
                 public function getById($id)
                 {
                     return Course::findOrFail($id);
@@ -43,16 +53,17 @@
                 public function create(CourseRequest $request)
                 {
                     try {
+                        DB::beginTransaction();
                         $video_id = null;
                         $thumbnail = null;
                         if($request->video_link) {
-                            $video_id = $this->getYoutubeIdFromUrl($link);
+                            $video_id = $this->getYoutubeIdFromUrl($request->video_link);
                         }
                         if($request->has('thumbnail')){
                             $thumbnail = parent::uploadImage($request->thumbnail, $this->folder_path_image, $this->prefix_path_image);
                         }
 
-                        return Course::create([
+                        $course = Course::create([
                             'title'=>$request->title,
                             'user_id'=>auth()->user()->id,
                             'description'=>$request->description,
@@ -63,9 +74,18 @@
                             'thumbnail' => $thumbnail,
                             'unique_id' => parent::generateUniqueRandomNumber('courses', 'unique_id'),
                         ]);
+                        foreach($request->course_resource_id as $id){
+                            $this->courseCourseResource::create([
+                                'course_id' => $course->id,
+                                'course_resource_id' => $id,
+                            ]);
+                        }
+                        DB::commit();
+
                         return true;
                     } catch (\Throwable $th) {
                         //throw $th;
+                        DB::rollBack();
                         Log::info($th);
                         return false; 
                     }
@@ -75,40 +95,62 @@
                 public function update($id, CourseRequest $request)
                 {
                     $model = $this->getById($id);
+
                     try {
+                        DB::beginTransaction();
+
                         $video_id = $model->video_id;
                         $thumbnail = $model->thumbnail;
-                        if($request->video_link) {
-                            $video_id = $this->getYoutubeIdFromUrl($link);
+
+                        if ($request->video_link) {
+                            $video_id = $this->getYoutubeIdFromUrl($request->video_link);
                         }
-                        if($request->has('thumbnail')){
-                            parent::deleteImage($thumbnail);
+
+                        if ($request->has('thumbnail')) {
+                            // Delete the old thumbnail if it exists
+                            if ($thumbnail) {
+                                parent::deleteImage($thumbnail);
+                            }
                             $thumbnail = parent::uploadImage($request->thumbnail, $this->folder_path_image, $this->prefix_path_image);
                         }
 
-                        return $model::update([
-                            'title'=>$request->title,
-                            'user_id'=>auth()->user()->id,
-                            'description'=>$request->description,
-                            'course_material'=>$request->course_material,
+                        // Update model fields
+                        $model->update([
+                            'title' => $request->title,
+                            'description' => $request->description,
+                            'course_material' => $request->course_material,
                             'status' => $request->status,
                             'video_link' => $request->video_link,
                             'video_id' => $video_id,
                             'thumbnail' => $thumbnail,
-                            'unique_id' => parent::generateUniqueRandomNumber('courses', 'unique_id'),
                         ]);
+
+                        // Update course resources
+                        if ($request->has('course_resource_id')) {
+                            $model->courseResources()->sync($request->course_resource_id);
+                        }
+
+                        DB::commit();
                         return true;
                     } catch (\Throwable $th) {
-                        //throw $th;
+                        DB::rollBack();
                         Log::info($th);
-                        return false; 
+                        return false;
                     }
                 }
+
 
                 public function getChapterCategory(){
                     return $this->chapterCategory->getActiveData();
                 }
 
+                public function getAllTeacher(){
+                    return $this->teacherRepository->getAll();
+                }
+
+                public function getSchool(){
+                    return $this->schoolRepository->getActiveSchool();
+                }
                 public function delete($id)
                 {
                     $model = $this->getById($id);

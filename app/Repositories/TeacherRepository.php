@@ -11,7 +11,7 @@
             {
                 public function getAll()
                 {
-                    return Teacher::all();
+                    return Teacher::whereHas('user')->with('user')->get();
                 }
 
                 public function getById($id)

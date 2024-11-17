@@ -8,12 +8,12 @@ use App\Repositories\StudentRepositoryInterface;
 use App\Http\Requests\StudentRequest;
 use Yajra\DataTables\Facades\DataTables;
 
-class StudentController extends Controller
+class StudentController extends DM_BaseController
 {
     protected $repository;
     protected $panel = 'Student';
-    protected $base_route = 'admin.student';
-    protected $view_path = 'admin.student';
+    protected $base_route = 'admin.students';
+    protected $view_path = 'admin.students';
 
     public function __construct(StudentRepositoryInterface $repository){
         $this->repository = $repository;

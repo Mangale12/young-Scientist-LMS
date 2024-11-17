@@ -11,6 +11,9 @@
                 {
                     return School::all();
                 }
+                public function getActiveSchool(){
+                    return School::where('status', 1)->get();
+                }
 
                 public function getById($id)
                 {
