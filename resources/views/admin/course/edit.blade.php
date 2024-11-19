@@ -57,7 +57,60 @@
                   <p id="video-error" class="help-block text-danger"><span>{{ $errors->first('video_link') }}</span></p>
                   @endif
                 </div>
-
+                <div class="form-group col-12">
+                  <label for="school-id">Schools *</label>
+                  <select name="school_ids[]" id="school-id" class="form-control select-two select-school" multiple>
+                      <option selected disabled>Select Schools</option>
+                      @foreach($data['schools'] as $school)
+                          <option value="{{ $school->id }}" 
+                              {{ in_array($school->id, old('school_ids', $data['row']->schools->pluck('id')->toArray())) ? 'selected' : '' }}>
+                              {{ $school->name }}
+                          </option>
+                      @endforeach
+                  </select>
+                  @if($errors->has('school_ids'))
+                      <p id="school_ids-error" class="help-block text-danger">
+                          <span>{{ $errors->first('school_ids') }}</span>
+                      </p>
+                  @endif
+              </div>
+              
+              <div class="form-group col-12">
+                  <label for="teacher_ids">Teacher *</label>
+                  <select name="teacher_ids[]" id="teacher_ids" class="form-control select-two select-teacher" multiple>
+                      <option selected disabled>Select Teacher</option>
+                      @foreach($data['teachers'] as $teacher)
+                          <option value="{{ $teacher->id }}" 
+                              {{ in_array($teacher->id, old('teacher_ids', $data['row']->teachers->pluck('id')->toArray())) ? 'selected' : '' }}>
+                              {{ $teacher->user->name }}
+                          </option>
+                      @endforeach
+                  </select>
+                  @if($errors->has('teacher_ids'))
+                      <p id="teacher_ids-error" class="help-block text-danger">
+                          <span>{{ $errors->first('teacher_ids') }}</span>
+                      </p>
+                  @endif
+              </div>
+              
+              <div class="form-group col-12">
+                  <label for="grade_ids">Grade *</label>
+                  <select name="grade_ids[]" id="grade_ids" class="form-control select-two select-grade" multiple>
+                      <option selected disabled>Select Grade</option>
+                      @foreach($data['grades'] as $grade)
+                          <option value="{{ $grade->id }}" 
+                              {{ in_array($grade->id, old('grade_ids', $data['row']->grades->pluck('id')->toArray())) ? 'selected' : '' }}>
+                              {{ $grade->name }}
+                          </option>
+                      @endforeach
+                  </select>
+                  @if($errors->has('grade_ids'))
+                      <p id="grade_ids-error" class="help-block text-danger">
+                          <span>{{ $errors->first('grade_ids') }}</span>
+                      </p>
+                  @endif
+              </div>
+              
                 <div class="form-group col-12">
                   <label for="description">Description *</label>
                   <textarea name="description" id="description" class="form-control description">{{ old('description', $data['row']->description) }}</textarea>

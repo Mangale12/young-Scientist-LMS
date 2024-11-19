@@ -50,12 +50,12 @@
                             <th>Title</th>
                             <th>Video</th>
                             <th>Thumbnail</th>
-                            <th>Cost</th>
-                            <th>Chapter Count</th>
+                            <th>Schools</th>
                             <th>Teachers</th>
-                            <th>Student Count</th>
-                            <th>Total Enrolled</th>
-                            <th>Added Date</th>
+                            <th>Grades</th>
+                            <th>Course Resources</th>
+                            <th>Description</th>
+                            <th>Created At</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -212,11 +212,11 @@
                 { data: 'title', name: 'title' },
                 { data: 'video_link', name: 'video_link' },
                 { data: 'thumbnail', name: 'thumbnail' },
-                { data: 'cost', name: 'cost' },
-                { data: 'cost', name: 'cost' },
-                { data: 'teacher', name: 'teacher' },
+                { data: 'schools', name: 'schools' },
+                { data: 'teachers', name: 'teachers' },
+                { data: 'grades', name: 'grades' },
+                { data: 'course_resources', name: 'course_resources' },
                 { data: 'description', name: 'description' },
-                { data: 'cost', name: 'cost' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

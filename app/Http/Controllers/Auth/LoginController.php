@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,8 +13,6 @@ class LoginController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -23,22 +20,87 @@ class LoginController extends Controller
     }
 
     /**
-     * The user has been authenticated.
+     * Handle authenticated user after login.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     protected function authenticated(Request $request, $user)
     {
-        Log::channel('login_log')->info('Testing custom log channel.');
-        // Redirect based on user role
-        return redirect()->route('admin.index'); // Redirect for admin users
+        // Log the login event
+        Log::channel('login_log')->info("User {$user->id} logged in successfully.");
 
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.index'); // Redirect for admin users
+        // Determine redirection URL based on user role
+        $redirectUrl = $user->role === 'admin' 
+            ? route('admin.index') 
+            : route('user.dashboard');
+
+        // If the request expects JSON (API request)
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                ],
+                'redirect_url' => $redirectUrl,
+            ]);
         }
 
-        return redirect()->route('user.dashboard'); // Redirect for regular users
+        // For non-API requests, perform the standard redirect
+        return redirect($redirectUrl);
+    }
+
+    /**
+     * Handle login failure.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        $message = 'Invalid credentials. Please try again.';
+
+        // If the request expects JSON (API request)
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+            ], 401);
+        }
+
+        // For non-API requests, redirect back with errors
+        return redirect()->back()
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors([$this->username() => $message]);
+    }
+
+    /**
+     * Override the default logout method for JSON compatibility.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // If the request expects JSON (API request)
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout successful',
+            ]);
+        }
+
+        // For non-API requests, redirect to login page
+        return redirect('/');
     }
 }

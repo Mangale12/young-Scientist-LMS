@@ -19,21 +19,40 @@
                 private $courseCourseResource;
                 protected $schoolRepository;
                 protected $teacherRepository;
-                public function __construct(ChapterCategoryRepositoryInterface $chapterCategory, CourseResourceRepositoryInterface $courseResourceRepository, CourseCourseResource $courseCourseResource, TeacherRepositoryInterface $teacherResourceRepository, SchoolRepositoryInterface $schoolRepository)
-                {
+                protected $gradeRepository;
+                public function __construct(ChapterCategoryRepositoryInterface $chapterCategory, CourseResourceRepositoryInterface $courseResourceRepository, TeacherRepositoryInterface $teacherRepository, SchoolRepositoryInterface $schoolRepository, GradeRepositoryInterface $gradeRepository)
+                { 
                     $this->chapterCategory = $chapterCategory;
-                    $this->courseCourseResource = $courseCourseResource;
-                    $this->teacherRepository = $teacherResourceRepository;
-                    $this->schoolRepository = $schoolRepository;
                     $this->courseResourceRepository = $courseResourceRepository;
+                    $this->teacherRepository = $teacherRepository;
+                    $this->schoolRepository = $schoolRepository;
+                    $this->gradeRepository = $gradeRepository;
                     $this->folder_path_image = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
                     $this->folder_path_file = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR;
                 }
+
+                // public function __construct(ChapterCategoryRepositoryInterface $chapterCategory, CourseResourceRepositoryInterface $courseCourseResource, TeacherRepositoryInterface $teacherResourceRepository, SchoolRepositoryInterface $schoolRepository, GradeRepositoryInterface $gradeRepository)
+                // {
+                //     $this->chapterCategory = $chapterCategory;
+                //     $this->teacherRepository = $teacherResourceRepository;
+                //     $this->schoolRepository = $schoolRepository;
+                //     $this->gradeRepository = $gradeRepository;
+                //     $this->courseResourceRepository = $courseResourceRepository;
+                //     $this->folder_path_image = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
+                //     $this->folder_path_file = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR;
+                // }
             
 
                 public function getAll()
                 {
-                    return Course::all();
+                    return Course::with('courseResources')
+                                    ->with('schools')
+                                    ->with('teachers')
+                                    ->with('grades')
+                                    ->get();
+                }
+                public  function getActiveCourse(){
+                    return Course::where('status', 1)->get();
                 }
                 public function getCourseResource(){
                     return $this->courseResourceRepository->getActiveData();
@@ -80,6 +99,9 @@
                                 'course_resource_id' => $id,
                             ]);
                         }
+                        $course->schools()->sync($request->input('school_ids')); // Sync schools
+                        $course->teachers()->sync($request->input('teacher_ids')); // Sync teachers
+                        $course->grades()->sync($request->input('grade_ids')); // Sync grades
                         DB::commit();
 
                         return true;
@@ -87,6 +109,7 @@
                         //throw $th;
                         DB::rollBack();
                         Log::info($th);
+                        dd($th);
                         return false; 
                     }
                     
@@ -129,7 +152,9 @@
                         if ($request->has('course_resource_id')) {
                             $model->courseResources()->sync($request->course_resource_id);
                         }
-
+                        $model->schools()->sync($request->input('school_ids')); // Sync schools
+                        $model->teachers()->sync($request->input('teacher_ids')); // Sync teachers
+                        $model->grades()->sync($request->input('grade_ids')); // Sync grades
                         DB::commit();
                         return true;
                     } catch (\Throwable $th) {
@@ -144,12 +169,19 @@
                     return $this->chapterCategory->getActiveData();
                 }
 
+                public function getAllCourseResource(){
+                    return $this->courseResourceRepository->getActiveData();
+                }
+
                 public function getAllTeacher(){
                     return $this->teacherRepository->getAll();
                 }
 
-                public function getSchool(){
+                public function getAllSchool(){
                     return $this->schoolRepository->getActiveSchool();
+                }
+                public function getAllGrade(){
+                    return $this->gradeRepository->getActiveGrade();
                 }
                 public function delete($id)
                 {

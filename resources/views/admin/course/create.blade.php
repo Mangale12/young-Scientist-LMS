@@ -58,11 +58,11 @@
                 </div>
 
                 <div class="form-group col-12">
-                  <label for="video">Schooles *</label>
-                  <select name="school_ids[]" id="school-id">
+                  <label for="video">Schools *</label>
+                  <select name="school_ids[]" id="school-id" class="form-control select-two select-school" multiple> 
                     <option selected disabled>Select Schools</option>
                     @foreach($data['schools'] as $school)
-                    <option value="{{$school->id }}" {{ old('school_ids', $data['row']->school_ids) == $school->id?'selected' : '' }}>{{ $school->name }}</option>
+                    <option value="{{$school->id }}" {{ old('school_ids') == $school->id?'selected' : '' }}>{{ $school->name }}</option>
                     @endforeach
                   </select>
                   @if($errors->has('school_ids'))
@@ -72,14 +72,27 @@
 
                 <div class="form-group col-12">
                   <label for="teacher_ids">Teacher *</label>
-                  <select name="teacher_ids[]" id="teacher_ids">
-                    <option selected disabled>Select Schools</option>
+                  <select name="teacher_ids[]" id="teacher_ids" class="form-control select-two select-teacher" multiple>
+                    <option selected disabled>Select Teacher</option>
                     @foreach($data['teachers'] as $teacher)
-                    <option value="{{$school->id }}" {{ old('teacher_ids', $data['row']->teacher) == $teacher->id?'selected' : '' }}>{{ $teacher->name }}</option>
+                    <option value="{{$teacher->id }}" {{ old('teacher_ids') == $teacher->id?'selected' : '' }}>{{ $teacher->user->name }}</option>
                     @endforeach
                   </select>
                   @if($errors->has('teacher_ids'))
                   <p id="teacher_ids-error" class="help-block text-danger"><span>{{ $errors->first('teacher_ids') }}</span></p>
+                  @endif
+                </div>
+
+                <div class="form-group col-12">
+                  <label for="teacher_ids">Grade *</label>
+                  <select name="grade_ids[]" id="grade_ids" class="form-control select-two select-grade" multiple>
+                    <option selected disabled>Select Grade</option>
+                    @foreach($data['grades'] as $grade)
+                    <option value="{{$grade->id }}" {{ old('grade_ids') == $grade->id?'selected' : '' }}>{{ $grade->name }}</option>
+                    @endforeach
+                  </select>
+                  @if($errors->has('grade_ids'))
+                  <p id="grade_ids-error" class="help-block text-danger"><span>{{ $errors->first('grade_ids') }}</span></p>
                   @endif
                 </div>
 

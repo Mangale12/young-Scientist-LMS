@@ -12,6 +12,10 @@
                     return Grade::all();
                 }
 
+                public function getActiveGrade(){
+                    return Grade::where('status', 1)->get();
+                }
+
                 public function getById($id)
                 {
                     return Grade::findOrFail($id);

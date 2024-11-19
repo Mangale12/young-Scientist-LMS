@@ -44,8 +44,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(StudentRepositoryInterface::class, StudentRepository::class);
         $this->app->bind(SiteRepositoryInterface::class, SiteRepository::class);
         $this->app->bind(TeacherRepositoryInterface::class, TeacherRepository::class);
-        $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
+        $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
         $this->app->bind(ChapterCategoryRepositoryInterface::class, ChapterCategoryRepository::class);
         $this->app->bind(ChapterRepositoryInterface::class, ChapterRepository::class);
         $this->app->bind(CourseResourceRepositoryInterface::class, CourseResourceRepository::class);

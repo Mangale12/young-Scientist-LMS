@@ -24,6 +24,8 @@ Route::post('/image-upload', [App\Http\Controllers\CKEditorController::class, 'u
 
 Route::group(['namespace' => 'Backend', 'prefix' => '/admin', 'as' => 'admin.',  'middleware' => ['auth']], function () {
     include('Backend/Backend.php');
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('index');
+
 });
 
 Auth::routes();

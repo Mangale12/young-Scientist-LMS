@@ -43,11 +43,17 @@ class TeacherController extends DM_BaseController
                 ->addColumn('email', function($row){
                     $row->user->email;
                 })
+                ->addColumn('total_course', function($row){
+                    return $row->courses->count();
+                })
                 ->rawColumns(['action']) // Render both columns as HTML
                 ->make(true);
         }
     }
 
+    public function courses($id){
+        return response($this->repository->getById($id)->courses);
+    } 
 
     public function create(){
         return view($this->view_path.'.create');

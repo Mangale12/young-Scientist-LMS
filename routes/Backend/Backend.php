@@ -196,12 +196,20 @@ Route::group(['prefix' => 'grade',             'as' => 'grade.'], function () {
 // School Type Route
 Route::group(['prefix' => 'shool',             'as' => 'school.'], function () {
     Route::get('/',                                    [App\Http\Controllers\Admin\SchoolController::class, 'index'])->name('index');
-    Route::get('/data/all',                         [App\Http\Controllers\Admin\SchoolController::class, 'getData'])->name('data');
+    Route::get('/data/all',                            [App\Http\Controllers\Admin\SchoolController::class, 'getData'])->name('data');
     Route::get('/create',                              [App\Http\Controllers\Admin\SchoolController::class, 'create'])->name('create');
+    Route::get('/courses/{id}',                        [App\Http\Controllers\Admin\SchoolController::class, 'courses'])->name('courses');
+    Route::get('/grades/{id}',                         [App\Http\Controllers\Admin\SchoolController::class, 'grades'])->name('grades');
+    Route::post('/add-grade',                           [App\Http\Controllers\Admin\SchoolController::class, 'addGrade'])->name('add-grade');
+    Route::post('/grade/add-section',                           [App\Http\Controllers\Admin\SchoolController::class, 'addGradeSection'])->name('grade.add-section');
+    Route::get('/grades/{school_id}/{grade_id}',       [App\Http\Controllers\Admin\SchoolController::class, 'gradeSection'])->name('grade.sections');
+    
     Route::post('',                                    [App\Http\Controllers\Admin\SchoolController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\SchoolController::class, 'edit'])->name('edit');
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\SchoolController::class, 'update'])->name('update');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\SchoolController::class, 'destroy'])->name('destroy');
+    Route::post('/remove-course',                      [App\Http\Controllers\Admin\SchoolController::class, 'removeCourse'])->name('remove-course');
+    Route::post('/remove-grade',                      [App\Http\Controllers\Admin\SchoolController::class, 'removeGrade'])->name('remove-grade');
 });
 
 // Section Route
@@ -266,11 +274,12 @@ Route::group(['prefix' => 'chapters',             'as' => 'chapters.'], function
 Route::group(['prefix' => 'teachers',             'as' => 'teachers.'], function () {
     Route::get('/',                                    [App\Http\Controllers\Admin\TeacherController::class, 'index'])->name('index');
     Route::get('/data/all',                            [App\Http\Controllers\Admin\TeacherController::class, 'getData'])->name('data');
+    Route::get('/courses/{id}',                        [App\Http\Controllers\Admin\TeacherController::class, 'courses'])->name('courses');
     Route::get('/create',                              [App\Http\Controllers\Admin\TeacherController::class, 'create'])->name('create');
     Route::post('/',                                   [App\Http\Controllers\Admin\TeacherController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\TeacherController::class, 'edit'])->name('edit');
-    Route::post('/update/{id}',                         [App\Http\Controllers\Admin\TeacherController::class, 'update'])->name('update');
-    Route::put('/chapters/{id}',                         [App\Http\Controllers\Admin\TeacherController::class, 'chapters'])->name('chapters');
+    Route::post('/update/{id}',                        [App\Http\Controllers\Admin\TeacherController::class, 'update'])->name('update');
+    Route::put('/chapters/{id}',                       [App\Http\Controllers\Admin\TeacherController::class, 'chapters'])->name('chapters');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\TeacherController::class, 'destroy'])->name('destroy');
 });
 

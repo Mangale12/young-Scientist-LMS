@@ -22,6 +22,9 @@ class StudentController extends DM_BaseController
     public function index(){
         return view(parent::loadView($this->view_path.'.index'));
     }
+    public function dashboard(){
+        return view('site.student.dashboard');
+    }
 
     // Fetch data for the DataTable
     public function getData(Request $request){

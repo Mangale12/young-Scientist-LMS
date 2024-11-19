@@ -17,7 +17,10 @@ class SchoolController extends DM_BaseController
         $this->repository = $repository;
     }
     public function index(){
-        return view(parent::loadView($this->view_path.'.index'));
+        $data['courses'] = $this->repository->getAllCourse();
+        $data['grades'] = $this->repository->getAllGrade();
+        return view(parent::loadView($this->view_path.'.index'), compact('data'));
+
         $data['rows'] = $this->repository->all();
         
         return response()->json($schools);
@@ -31,12 +34,39 @@ class SchoolController extends DM_BaseController
                 ->addColumn('action', function ($row) {
                     $editButton = view('admin.section.buttons.button-edit', ['id' => $row->id, 'route' => route($this->base_route.'.edit', $row->id)]);
                     $deleteButton = view('admin.section.buttons.button-delete', ['id' => $row->id, 'route' => route($this->base_route.'.destroy', $row->id)]);
-
-                    return $editButton.' '.$deleteButton;
+                    $courseList = view('admin.section.buttons.button-add-chapter', ['id' => $row->id, 'route' => route($this->base_route.'.courses', $row->id)]);
+                    return $editButton.' '.$deleteButton . ' '.$courseList;
+                })
+                ->addColumn('course', function($row){
+                    return $row->courses;
+                })
+                ->addColumn('course_count', function($row){
+                    return $row->courses->count();
                 })
                 ->rawColumns(['action']) // To render HTML content
                 ->make(true);
         }
+    }
+
+    public function courses($id){
+        $school = $this->repository->getById($id);
+        $grades = $school->grades;
+        $courses = $school->courses;
+        return response()->json(['grades' => $grades, 'courses'=>$courses]);
+    }
+    public function gradeSection($school_id, $grade_id){
+        return response()->json($this->repository->schoolGradeSection($school_id, $grade_id));
+    }
+    public function grades($id){
+        return response($this->repository->getById($id)->grades);
+    }
+
+    public function addGrade(Request $request){
+        return response()->json(['message' => $this->repository->addGrade($request)]);
+    }
+
+    public function removeGrade(Request $request){
+        return response($this->repository->removeGrade($request));
     }
     public function create(){
         return view(parent::loadView($this->view_path.'.create'));
@@ -71,4 +101,28 @@ class SchoolController extends DM_BaseController
         session()->flash('alert-success', 'Data deleted successfully!');
         return redirect()->route($this->base_route.'.index');
     }
+
+    public function removeCourse(Request $request)
+    {
+        $school = $this->repository->getById($request->school_id);
+
+        if (!$school) {
+            return response()->json(['message' => 'School not found!'], 404);
+        }
+
+        $course = $school->courses()
+            ->where('courses.id', $request->course_id) // Explicitly specify the table
+            ->first();
+
+        if ($course) {
+            // Detach the course from the school if using a pivot table
+            $school->courses()->detach($course->id);
+
+            return response()->json(['message' => 'Course removed successfully!']);
+        } else {
+            return response()->json(['message' => 'Course not found for this school!'], 404);
+        }
+    }
+
+
 }

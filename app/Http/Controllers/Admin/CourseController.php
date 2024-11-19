@@ -31,20 +31,29 @@ class CourseController extends DM_BaseController
         if ($request->ajax()) {
             $data = $this->repository->getAll();
             return DataTables::of($data)
-                ->addColumn('action', function ($row) {
-                    $editButton = view('admin.section.buttons.button-edit', ['id' => $row->id, 'route' => route($this->base_route.'.edit', $row->id)]);
-                    $deleteButton = view('admin.section.buttons.button-delete', ['id' => $row->id, 'route' => route($this->base_route.'.destroy', $row->id)]);
-                    $addChapter = view('admin.section.buttons.button-add-chapter', ['id' => $row->id, 'route' => route($this->base_route.'.chapters', $row->id)]);
-                    return $editButton.' '.$deleteButton. ' '.$addChapter;
-                })
-                ->addColumn('description', function ($row) {
-                    return $row->description; // return the raw description content
-                })
-                ->addColumn('teacher', function ($row) {
-                    return view('admin.section.assign-teacher', ['id'=>$row->id, 'teachers' => $this->repository->getAllTeacher()]); // return the raw description content
-                })
-                ->rawColumns(['description', 'action']) // Render both columns as HTML
-                ->make(true);
+                    ->addColumn('action', function ($row) {
+                        $editButton = view('admin.section.buttons.button-edit', ['id' => $row->id, 'route' => route($this->base_route.'.edit', $row->id)]);
+                        $deleteButton = view('admin.section.buttons.button-delete', ['id' => $row->id, 'route' => route($this->base_route.'.destroy', $row->id)]);
+                        $addChapter = view('admin.section.buttons.button-add-chapter', ['id' => $row->id, 'route' => route($this->base_route.'.chapters', $row->id)]);
+                        return $editButton.' '.$deleteButton. ' '.$addChapter;
+                    })
+                    ->addColumn('description', function ($row) {
+                        return $row->description; // return the raw description content
+                    })
+                    ->addColumn('schools', function ($row) {
+                        return $row->schools->pluck('name')->join(', ');
+                    })
+                    ->addColumn('teachers', function ($row) {
+                        return $row->teachers->pluck('user.name')->join(', ');
+                    })
+                    ->addColumn('grades', function ($row) {
+                        return $row->grades->pluck('name')->join(', ');
+                    })
+                    ->addColumn('course_resources', function ($row) {
+                        return $row->courseResources->pluck('resource_name')->join(', ');
+                    })
+                    ->rawColumns(['action', 'description']) // Allow HTML rendering for the action column
+                    ->make(true);
         }
     }
     public function view($id){
@@ -54,6 +63,9 @@ class CourseController extends DM_BaseController
     }
     public function create(){
         $data['course_resources'] = $this->repository->getCourseResource();
+        $data['teachers'] = $this->repository->getAllTeacher();
+        $data['grades'] = $this->repository->getAllGrade();
+        $data['schools'] = $this->repository->getAllSchool();
         return view(parent::loadView($this->view_path.'.create'), compact('data'));
     }
     public function store(CourseRequest $request){
@@ -66,8 +78,11 @@ class CourseController extends DM_BaseController
         }
     }
     public function edit($id){
-        $data['row'] = $this->repository->getById($id);
+        $data['row'] = $this->repository->getById($id)->load(['schools', 'teachers', 'grades', 'courseResources']);
         $data['course_resources'] = $this->repository->getCourseResource();
+        $data['teachers'] = $this->repository->getAllTeacher();
+        $data['grades'] = $this->repository->getAllGrade();
+        $data['schools'] = $this->repository->getAllSchool();
         $data['selected-courseresources'] = $data['row']->courseResources->pluck('id')->toArray();
         return view(parent::loadView($this->view_path.'.edit'), compact('data'));
     }

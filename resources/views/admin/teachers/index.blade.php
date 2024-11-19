@@ -47,6 +47,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Code</th>
+                            <th>Total Course</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -69,6 +70,35 @@
     <!-- Control sidebar content goes here -->
   </aside>
   <!-- /.control-sidebar -->
+</div>
+
+<!--Course list Modal -->
+<div class="modal fade" id="course-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width: 78vw; left: -35%;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Course Lisst</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Course Title</th>
+            </tr>
+          </thead>
+          <tbody id="courseList">
+            <!-- Rows will be populated here dynamically -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
 <!-- ./wrapper -->
@@ -96,8 +126,45 @@
                 { data: 'user.name', name: 'name' },
                 { data: 'user.email', name: 'email' },
                 { data: 'teacher_id', name: 'teacher_id' },
+                { data: 'total_course', name: 'total_course' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
+        });
+
+        function populateCourseChapters(id) {
+          $.ajax({
+            url: '{{ route($_base_route.".courses", ":id") }}'.replace(':id', id), // Dynamic course ID in route
+            type: "GET",
+            headers: {
+              'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
+            },
+            success: function(response) {
+              const tbody = $('#courseList');
+              tbody.empty(); // Clear existing rows
+
+              // Loop through the chapters received in the response and append rows
+              response.forEach(course => {
+                const row = `
+                  <tr>
+                    <td>${course.title}</td>
+                  </tr>
+                `;
+                tbody.append(row);
+              });
+            },
+            error: function(xhr, status, error) {
+              console.error("Failed to load chapters:", error);
+              alert("Error loading chapters. Please try again.");
+            }
+          });
+        }
+
+
+        $(document).on('click', '.btn-chapter-list', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id')
+            populateCourseChapters(id);
+            $('#course-list-modal').modal('show')
         });
     });
 </script>

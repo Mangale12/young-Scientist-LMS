@@ -33,4 +33,19 @@ class Course extends Model
         return $this->belongsToMany(CourseResource::class, 'course_course_resources');
     }
 
+    public function schools()
+    {
+        return $this->belongsToMany(School::class, 'course_schools');
+    }
+
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class, 'teacher_courses');
+    }
+
+    public function grades()
+    {
+        return $this->belongsToMany(Grade::class, 'course_grades');
+    }
+
 }

@@ -1,86 +1,7 @@
 
 @extends('site.layout.app')
 @section('content')
-    <section class="header">
-        <div class="header__top py-1">
-            <div class="container ">
-                <div class="d-flex justify-content-end login-register-btn">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginForm"><i class="fa-regular fa-user"></i>
-                        Login</a>
-                    <!-- Button trigger modal -->
-
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#registerForm"><i
-                            class="fa-solid fa-circle-notch"></i> Register Account</a>
-
-                </div>
-
-            </div>
-        </div>
-        <div class="header__navbar py-2">
-            <div class="container">
-                <div class="d-flex justify-content-between align-items-center">
-                    <a href="index.html"><img src="images/logo.png" alt="logo" height="70" class="center-image"></a>
-                    <nav class="header__navbar--left header__navbar--right">
-                        <ul class="d-flex align-items-center">
-
-                            <li class="dropdown">
-                                <a href="Pre-K & Kindergarten.html">LEVELS <i
-                                        class="fa-solid fa-chevron-down arrow"></i></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="Pre-K & Kindergarten.html">Pre-K & Kindergarten </a></li>
-                                    <li><a href="elementry.html">Elementary</a></li>
-                                    <li><a href="middle.html">Middle</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="elementary.html">CAMPS <i class="fa-solid fa-chevron-down arrow"></i></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="summber-camp.html">Summery CAMP</a></li>
-                                    <li><a href="winter-camp.html">Winter CAMP</a></li>
-                                    <li><a href="after-school.html">After School </a></li>
-
-
-
-                                </ul>
-                            </li>
-
-                            <li class="dropdown">
-                                <a href="middle.html">SCHOOL PROGRAM <i class="fa-solid fa-chevron-down arrow"></i></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="yearly-plan.html">Yearly Plan</a></li>
-                                    <li><a href="bootcamp.html">Bootcamp</a></li>
-                                    <li><a href="online-class.html">Online Class</a></li>
-
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="coding-cometition.html">COMPETITION </a>
-
-                            </li>
-                            <!-- Login dropdown -->
-                            <!-- <li class="dropdown">
-                                <a href="#">Login <i class="fa-solid fa-chevron-down arrow"></i></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="login.html">Individual Login</a></li>
-                                    <li><a href="#">School Login</a></li>
-                                </ul>
-                            </li> -->
-                            <!-- <li>
-                                <a class="try-a-free-class login" href="login.html">Login</a>
-                            </li> -->
-
-                            <li>
-                                <a class="try-a-free-class" href="try-free-class.html">Try a free Trial Class</a>
-                            </li>
-                        </ul>
-                    </nav>
-
-
-
-                </div>
-            </div>
-        </div>
-    </section>
+   
     <section class="banner">
         <div class="container ">
             <div class="banner__details d-flex justify-content-center ">
@@ -816,58 +737,7 @@
 
 
     <!-- Modal login-->
-    <div class="modal fade login-modals" id="loginForm" tabindex="-1" aria-labelledby="loginFormLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content position-relative-content">
-
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5  fw-bold w-100 " id="exampleModalLabel">Young Scientist Login</h1>
-
-                    <button type="button" class="btn-close close-btn-right" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-
-
-                <div class="modal-body">
-                    <div class="row g-0">
-                        <div class="col-lg-5">
-                            <img src="images/popup-sidebar1-1.png" alt="login" style="width: 100%;">
-
-                        </div>
-                        <div class="col-lg-7  p-4">
-                            <form>
-                                <div class="mb-4">
-
-                                    <input type="text" class="form-control" id="recipient-name"
-                                        placeholder="Username / Email">
-                                </div>
-                                <div class="mb-2">
-
-                                    <input type="password" class="form-control" id="recipient-name"
-                                        placeholder="Password">
-                                </div>
-                                <div class="mb-2 d-flex justify-content-end">
-                                    <a class="forget-password" href="#">Forgot Password?</a>
-                                </div>
-
-                                <div class="mb-4">
-                                    <button type="submit" class="btn  w-100 submit-btn">Sign in</button>
-                                </div>
-                            </form>
-                            <p>LET’S START LEARNING</p>
-                            <div class="mb-4">
-                                <a class="btn   w-100 submit-sign-up" href="#">Sign Up</a>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
+    @include('site.includes.index.login')
     <!-- Register login-->
     @include('site.includes.index.registration')
    
@@ -1004,6 +874,45 @@
                 });
             }
         });
+
+        $('#loginButton').on('click', function (e) {
+        e.preventDefault();
+        
+        let formData = {
+            _token: $('input[name="_token"]').val(),
+            email: $('#username-email').val(),
+            password: $('#password').val(),
+        };
+
+        $.ajax({
+            url: "{{ route('login') }}",
+            type: "POST",
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    window.location.href = response.redirect_url; // Redirect to the desired page
+                } else {
+                    $('#loginError').html(response.message).show();
+                }
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON) {
+                    // Check for 'message' key (common for login errors)
+                    if (xhr.responseJSON.message) {
+                        $('#loginError').html(xhr.responseJSON.message).show();
+                    }
+                    // Check for 'errors' key (validation errors)
+                    else if (xhr.responseJSON.errors) {
+                        let errors = xhr.responseJSON.errors;
+                        $('#loginError').html(Object.values(errors).join('<br>')).show();
+                    }
+                } else {
+                    $('#loginError').html('An unexpected error occurred. Please try again.').show();
+                }
+            }
+
+        });
+    });
     });
     </script>
 @endsection

@@ -10,6 +10,9 @@
                 {
                     return Section::all();
                 }
+                public function getActiveSection(){
+                    return Section::where('status', 1)->get();
+                }
 
                 public function getById($id)
                 {
