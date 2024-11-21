@@ -15,6 +15,13 @@
                     return Student::whereHas('user')->with('user')->get();
                 }
 
+                public function getStudentBySchool($school_id){
+                    return Student::whereHas('user')
+                                    ->with('user')
+                                    ->where('school_id', $school_id)
+                                    ->get();
+                }
+
                 public function getById($id)
                 {
                     return Student::findOrFail($id);

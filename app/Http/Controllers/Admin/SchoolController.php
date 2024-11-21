@@ -57,6 +57,9 @@ class SchoolController extends DM_BaseController
     public function gradeSection($school_id, $grade_id){
         return response()->json($this->repository->schoolGradeSection($school_id, $grade_id));
     }
+    public function addGradeSection(Request $request){
+        return $this->repository->addGradeSection($request);
+    }
     public function grades($id){
         return response($this->repository->getById($id)->grades);
     }
@@ -67,6 +70,37 @@ class SchoolController extends DM_BaseController
 
     public function removeGrade(Request $request){
         return response($this->repository->removeGrade($request));
+    }
+    public function removeGradeSection(Request $request){
+        return response($this->repository->removeGradeSection($request));
+    }
+
+    public function gradeSectionStudent($student_id, $grade_id, $section_id){
+        $students = $this->repository->gradeSectionStudent($student_id, $grade_id, $section_id);
+        return response()->json($students);
+    }
+
+    public function addGradeSectionStudent(Request $request){
+        return response()->json(['message' => $this->repository->addGradeSectionStudent($request)]);
+    }
+    public function removeGradeSectionStudent(Request $request){
+        return response()->json(['message' => $this->repository->removeGradeSectionStudent($request)]);
+    }
+
+    public function gradeSectionCourse($student_id, $grade_id, $section_id){
+        return response()->json($this->repository->gradeSectionCourse($student_id, $grade_id, $section_id));
+    }
+
+    public function addGradeSectionCourse(Request $request){
+        return $this->repository->addGradeSectionCourse($request);
+    }
+
+    public function removeGradeSectionCourse(Request $request){
+        return $this->repository->removeGradeSectionCourse($request);
+    }
+
+    public function gradeSectionCourseTeacher($student_id, $grade_id, $section_id){
+        return $this->repository->gradeSectionCourseTeacher($student_id, $grade_id, $section_id);
     }
     public function create(){
         return view(parent::loadView($this->view_path.'.create'));

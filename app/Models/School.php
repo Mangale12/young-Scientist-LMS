@@ -30,5 +30,15 @@ class School extends Model
         return $this->hasMany(SchoolGradeSection::class, 'school_id');
     }
 
+    public function schoolGradeSectionGradeStudent(){
+        return $this->hasMany(SchoolSectionGradeStudent::class, 'school_id');
+    }
+
+    public function schoolGradeSectionGradeCourse()
+    {
+        return $this->hasMany(SchoolSectionGradeCourse::class, 'school_id');
+    }
+
+
 
 }

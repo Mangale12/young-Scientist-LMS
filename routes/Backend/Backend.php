@@ -203,13 +203,22 @@ Route::group(['prefix' => 'shool',             'as' => 'school.'], function () {
     Route::post('/add-grade',                           [App\Http\Controllers\Admin\SchoolController::class, 'addGrade'])->name('add-grade');
     Route::post('/grade/add-section',                           [App\Http\Controllers\Admin\SchoolController::class, 'addGradeSection'])->name('grade.add-section');
     Route::get('/grades/{school_id}/{grade_id}',       [App\Http\Controllers\Admin\SchoolController::class, 'gradeSection'])->name('grade.sections');
+    Route::get('/grades/{school_id}/{grade_id}/{setion_id}',       [App\Http\Controllers\Admin\SchoolController::class, 'gradeSectionStudent'])->name('grade.section.student-list');
+    Route::post('/grade/section/add-student',       [App\Http\Controllers\Admin\SchoolController::class, 'addGradeSectionStudent'])->name('grade.section.add-student');
+    Route::get('/grades-course/{school_id}/{grade_id}/{setion_id}',       [App\Http\Controllers\Admin\SchoolController::class, 'gradeSectionCourse'])->name('grade.section.course-list');
+    Route::post('/grades/section/add-course',       [App\Http\Controllers\Admin\SchoolController::class, 'addGradeSectionCourse'])->name('grade.section.add-course');
+    Route::get('/grade-teacher/{school_id}/{grade_id}/{setion_id}',       [App\Http\Controllers\Admin\SchoolController::class, 'gradeSectionTeacher'])->name('grade.section.teacher-list');
+    
     
     Route::post('',                                    [App\Http\Controllers\Admin\SchoolController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\SchoolController::class, 'edit'])->name('edit');
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\SchoolController::class, 'update'])->name('update');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\SchoolController::class, 'destroy'])->name('destroy');
     Route::post('/remove-course',                      [App\Http\Controllers\Admin\SchoolController::class, 'removeCourse'])->name('remove-course');
-    Route::post('/remove-grade',                      [App\Http\Controllers\Admin\SchoolController::class, 'removeGrade'])->name('remove-grade');
+    Route::post('/remove-grade',                       [App\Http\Controllers\Admin\SchoolController::class, 'removeGrade'])->name('remove-grade');
+    Route::post('grade/remove-section',                [App\Http\Controllers\Admin\SchoolController::class, 'removeGradeSection'])->name('grade.remove-section');
+    Route::post('grade/section/remove-student',        [App\Http\Controllers\Admin\SchoolController::class, 'removeGradeSectionStudent'])->name('grade.section.remove-student');
+    Route::post('grade/section/remove-course',        [App\Http\Controllers\Admin\SchoolController::class, 'removeGradeSectionCourse'])->name('grade.section.remove-course');
 });
 
 // Section Route
