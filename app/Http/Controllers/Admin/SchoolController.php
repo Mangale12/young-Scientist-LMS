@@ -76,15 +76,15 @@ class SchoolController extends DM_BaseController
     }
 
     public function gradeSectionStudent($student_id, $grade_id, $section_id){
-        $students = $this->repository->gradeSectionStudent($student_id, $grade_id, $section_id);
+        return $this->repository->gradeSectionStudent($student_id, $grade_id, $section_id);
         return response()->json($students);
     }
 
     public function addGradeSectionStudent(Request $request){
-        return response()->json(['message' => $this->repository->addGradeSectionStudent($request)]);
+        return $this->repository->addGradeSectionStudent($request);
     }
     public function removeGradeSectionStudent(Request $request){
-        return response()->json(['message' => $this->repository->removeGradeSectionStudent($request)]);
+        return $this->repository->removeGradeSectionStudent($request);
     }
 
     public function gradeSectionCourse($student_id, $grade_id, $section_id){
@@ -101,6 +101,14 @@ class SchoolController extends DM_BaseController
 
     public function gradeSectionCourseTeacher($student_id, $grade_id, $section_id){
         return $this->repository->gradeSectionCourseTeacher($student_id, $grade_id, $section_id);
+    }
+
+    public function getAllTeacher(){
+        return $this->repository->getAllTeacher();
+    }
+
+    public function gradeSectionCourseAssignTeacher(Request $request){
+        return $this->repository->gradeSectionCourseAssignTeacher($request);
     }
     public function create(){
         return view(parent::loadView($this->view_path.'.create'));

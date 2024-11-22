@@ -54,12 +54,21 @@
                 public  function getActiveCourse(){
                     return Course::where('status', 1)->get();
                 }
+               
                 public function getCourseResource(){
                     return $this->courseResourceRepository->getActiveData();
                 }
                 public function getById($id)
                 {
                     return Course::findOrFail($id);
+                }
+                public function getChapterCount($id){
+                    return $this->getById($id)->chapter->count();
+                }
+                public function getByUniqueId($unique_id){
+                    return Course::where('unique_id', $unique_id)
+                                    ->with('chapter')
+                                    ->first();
                 }
                 function getYoutubeIdFromUrl($video_url)
                 {

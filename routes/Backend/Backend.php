@@ -208,6 +208,8 @@ Route::group(['prefix' => 'shool',             'as' => 'school.'], function () {
     Route::get('/grades-course/{school_id}/{grade_id}/{setion_id}',       [App\Http\Controllers\Admin\SchoolController::class, 'gradeSectionCourse'])->name('grade.section.course-list');
     Route::post('/grades/section/add-course',       [App\Http\Controllers\Admin\SchoolController::class, 'addGradeSectionCourse'])->name('grade.section.add-course');
     Route::get('/grade-teacher/{school_id}/{grade_id}/{setion_id}',       [App\Http\Controllers\Admin\SchoolController::class, 'gradeSectionTeacher'])->name('grade.section.teacher-list');
+    Route::get('/grade-section-teacher',                [App\Http\Controllers\Admin\SchoolController::class, 'getAllTeacher'])->name('grade.section.course.teachers');
+    Route::post('/grade-section-course-asign-teacher',                [App\Http\Controllers\Admin\SchoolController::class, 'gradeSectionCourseAssignTeacher'])->name('grade.section.course.assign-teacher');
     
     
     Route::post('',                                    [App\Http\Controllers\Admin\SchoolController::class, 'store'])->name('store');

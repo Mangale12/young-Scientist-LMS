@@ -32,11 +32,17 @@ class LoginController extends Controller
         Log::channel('login_log')->info("User {$user->id} logged in successfully.");
 
         // Determine redirection URL based on user role
-        $redirectUrl = $user->role === 'admin' 
-            ? route('admin.index') 
-            : route('user.dashboard');
-
-        // If the request expects JSON (API request)
+        $redirectUrl = null;
+        if($user->role === 'admin'){
+            $redirectUrl = route('admin.index');
+        }elseif ($user->role === 'teacher') {
+            $redirectUrl = route('teacher.dashboard');
+        }elseif($user->role == 'student'){
+            $redirectUrl = route('student.dashboard');
+        }else{
+            return $this->logout($request);
+        }
+        
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,

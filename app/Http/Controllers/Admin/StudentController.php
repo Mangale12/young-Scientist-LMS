@@ -23,9 +23,22 @@ class StudentController extends DM_BaseController
         return view(parent::loadView($this->view_path.'.index'));
     }
     public function dashboard(){
-        return view('site.student.dashboard');
+        return view('site.user.dashboard');
+    }
+    public function courses(){
+        return $this->repository->courses(auth()->user()->id);
+    }
+    public function coursesChapterCount($courseId){
+        return $this->repository->coursesChapterCount($courseId);
     }
 
+    public function courseDetails(Request $request, $unique_id){
+        if($request->ajax()){
+            return $this->repository->courseDetails($unique_id);
+        }else{
+            return view('site.user.course.details', compact('unique_id'));
+        }
+    }
     // Fetch data for the DataTable
     public function getData(Request $request){
         if ($request->ajax()) {

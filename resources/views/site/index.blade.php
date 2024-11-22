@@ -772,6 +772,8 @@
                 success: function(response) {
                     alert('Registration successful!');
                     $('#studentForm')[0].reset(); // Reset form fields
+                    $('#registerForm').modal('hide');
+                    $('#loginForm').modal('show');
                     // $('#myModal').modal('hide'); // Hide the modal (assuming modal has ID "myModal")
                 },
                 error: function(xhr) {

@@ -16,11 +16,17 @@ class SchoolGradeSectionCourse extends Model
 
     public function course()
     {
-        return $this->belongsTo(Course::class, 'course_id');
+        return $this->belongsTo(Course::class);
     }
 
     public function schoolGradeSectionCourseTeacher(){
         return $this->hasMany(SchoolGradeSectionCourseTeacher::class, 's_g_s_c_id');
+    }
+
+    // To retrieve the latest teacher
+    public function latestSchoolGradeSectionCourseTeacher()
+    {
+        return $this->hasOne(SchoolGradeSectionCourseTeacher::class, 's_g_s_c_id')->latest();
     }
 
     

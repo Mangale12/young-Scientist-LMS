@@ -20,6 +20,8 @@
                 public function addGradeSectionCourse(Request $request);
                 public function removeGradeSectionCourse(Request $request); 
                 public function gradeSectionCourseTeacher($student_id, $grade_id, $section_id);
+                public function getAllTeacher();
+                public function gradeSectionCourseAssignTeacher(Request $request);
                 public function getById($id);
                 public function create(SchoolRequest $request);
                 public function update($id, SchoolRequest $request);

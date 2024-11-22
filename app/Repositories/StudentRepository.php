@@ -10,9 +10,40 @@
 
             class StudentRepository extends DM_BaseRepository implements StudentRepositoryInterface
             {
+                private $courseRepository;
+                public function __construct(CourseRepositoryInterface $courseRepository){
+                    $this->courseRepository = $courseRepository;
+                }
                 public function getAll()
                 {
                     return Student::whereHas('user')->with('user')->get();
+                }
+
+
+                public function courses($id)
+                {
+                    // Retrieve the student by ID
+                    $student = $this->getById(2);
+                    
+                    if (!$student) {
+                        return response()->json(['message' => 'Student not found'], 404);
+                    }
+                
+                    // Eager load related data for courses
+                    $courses = $student->schoolSectionGradeStudent()
+                        ->with(['schoolGradeSection.schoolSectionGradeCourses.course:id,title,unique_id,thumbnail'])
+                        ->first();
+                
+                    return response()->json($courses, 200);
+                }
+                
+                public function coursesChapterCount($courseId){
+                    
+                    return response()->json($this->courseRepository->getChapterCount($courseId));
+                }
+
+                public function courseDetails($unique_id){
+                    return response()->json($this->courseRepository->getByUniqueId($unique_id));
                 }
 
                 public function getStudentBySchool($school_id){

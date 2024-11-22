@@ -6,6 +6,8 @@
             {
                 public function getAll();
                 public function getActiveCourse();
+                public function getChapterCount($id);
+                public function getByUniqueId($unique_id);
                 public function getById($id);
                 public function getChapterCategory();
                 public function getYoutubeIdFromUrl($url);

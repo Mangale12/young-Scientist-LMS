@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace'=>'Site', 'as'=>'site.'], function(){
     include('site.php');
 });
+Route::group(['namespace'=>'Student', 'as'=>'student.'], function(){
+    include('student.php');
+});
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });

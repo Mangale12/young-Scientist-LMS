@@ -139,47 +139,77 @@
 
                 public function gradeSectionStudent($school_id, $grade_id, $section_id){
                     $school = $this->getById($school_id);
-                    $students = $school->schoolGradeSectionGradeStudent()
-                                        ->where('grade_id', $grade_id)
-                                        ->where('section_id', $section_id)
-                                        ->with('student.user') // Eager load the related student and user
-                                        ->get();
+                    // $students = $school->schoolGradeSections()
+                    //                     ->where('grade_id', $grade_id)
+                    //                     ->where('section_id', $section_id)
+                    //                     ->with('schoolGradeSectionGradeStudent.student.user')
+                    //                     ->get();
+                        $students = $school->schoolGradeSections()
+                                            ->where('grade_id', $grade_id)
+                                            ->where('section_id', $section_id)
+                                            // ->with('schoolGradeSectionGradeStudent.student.user: id, name, email') // Load related data
+                                            ->with([
+                                                'schoolGradeSectionGradeStudent.student.user:id,name,email'
+                                            ]) 
+                                            ->first();
+                                
                     $studentRepository = app(StudentRepositoryInterface::class);
                     $allStudent = $studentRepository->getStudentBySchool($school_id);
                     
-                    return ['students' => $students, 'allStudent' => $allStudent];
+                    return response()->json(['students' => $students, 'allStudent' => $allStudent]);
                    
-                }
-
-                public function removeGradeSectionStudent(Request $request){
-                    $school = $this->getById($request->school_id);
-                    $school->schoolGradeSectionGradeStudent()
-                                        ->where('grade_id', $request->grade_id)
-                                        ->where('section_id', $request->section_id)
-                                        ->where('student_id', $request->student_id)
-                                        ->delete();
-                    return "Student removed successfully from this grade and section.";
                 }
 
                 public function addGradeSectionStudent(Request $request){
                     $school = $this->getById($request->school_id);
-                    $students = $school->schoolGradeSectionGradeStudent()
-                                        ->where('grade_id', $request->grade_id)
-                                        ->where('section_id', $request->section_id)
-                                        ->where('student_id', $request->student_id)
-                                        ->exists();
-                    if($students){
-                        return "Student is already associated with this grade and section.";
-                    }else{
-                        $school->schoolGradeSectionGradeStudent()->create([
-                            'grade_id' => $request->grade_id,
-                           'section_id' => $request->section_id,
-                           'student_id' => $request->student_id,
-                        ]);
-                        return "Student added successfully to this grade and section.";
+                    $gradeSection = $school->schoolGradeSections()
+                                            ->where('grade_id', $request->grade_id)
+                                            ->where('section_id', $request->section_id)
+                                            ->first();
+
+                    if (!$gradeSection) {
+                        return response()->json(['message' => 'Grade or Section not found in this school'], 404);
                     }
-                    
+
+                    if($gradeSection->schoolGradeSectionGradeStudent()->where('student_id', $request->student_id)->exists()) {
+                        return response()->json(['message' => 'Student already exists in this grade and section'], 409);
+                    }
+                    // Add the student to the grade and section
+                    $gradeSection->schoolGradeSectionGradeStudent()->create([
+                        'student_id' => $request->student_id,
+                    ]);
+                    return response()->json(['message' => 'Student added successfully to this grade and section'], 201);
                 }
+
+                public function removeGradeSectionStudent(Request $request)
+                {
+                    $school = $this->getById($request->school_id);
+
+                    if (!$school) {
+                        return response()->json(['message' => 'School not found'], 404);
+                    }
+
+                    $gradeSection = $school->schoolGradeSections()
+                        ->where('grade_id', $request->grade_id)
+                        ->where('section_id', $request->section_id)
+                        ->first();
+
+                    if (!$gradeSection) {
+                        return response()->json(['message' => 'Grade or Section not found in this school'], 404);
+                    }
+
+                    $studentRemoved = $gradeSection->schoolGradeSectionGradeStudent()
+                        ->where('student_id', $request->student_id)
+                        ->delete();
+
+                    if (!$studentRemoved) {
+                        return response()->json(['message' => 'Student not found in this grade and section'], 404);
+                    }
+
+                    return response()->json(['message' => 'Student removed successfully from this grade and section'], 200);
+                }
+
+                
 
                 public function gradeSectionCourse($student_id, $grade_id, $section_id){
                     $school = $this->getById($student_id);
@@ -195,7 +225,7 @@
                                     // ->with(['schoolSectionGradeCourses.schoolGradeSectionCourseTeacher'])
                                     ->with([
                                         'schoolSectionGradeCourses.course:id,title',
-                                        'schoolSectionGradeCourses.schoolGradeSectionCourseTeacher:id,teacher_id'
+                                        'schoolSectionGradeCourses.latestSchoolGradeSectionCourseTeacher.teacher.user:id,name'
                                     ])
                                     ->first();
                     $courseRepository = app(CourseRepositoryInterface::class);
@@ -287,6 +317,56 @@
                     return ['courses'=>$courses, 'allCourses'=>$allCourse];
                 }
 
+                public function getAllTeacher(){
+                    $teacherRepository = app(TeacherRepositoryInterface::class);
+                    return response($teacherRepository->getAll());
+                }
+
+                // public function gradeSectionCourseAssignTeacher(Request $request){
+                //     $school = $this->getById($request->school_id);
+                //     $schoolGradeSection = $school->schoolGradeSections()
+                //                                 ->where('section_id', $request->section_id)
+                //                                 ->where('grade_id', $request->grade_id)
+                //                                 ->with('schoolSectionGradeCourses')
+                //                                 ->first();
+                // }
+
+                public function gradeSectionCourseAssignTeacher(Request $request)
+                {
+                    // Retrieve the school by ID
+                    $school = $this->getById($request->school_id);
+
+                    // Find the specific SchoolGradeSection with the related schoolSectionGradeCourses
+                    $schoolGradeSection = $school->schoolGradeSections()
+                        ->where('section_id', $request->section_id)
+                        ->where('grade_id', $request->grade_id)
+                        ->with('schoolSectionGradeCourses')
+                        ->first();
+
+                    if (!$schoolGradeSection) {
+                        return response()->json(['message' => 'Grade Section not found'], 404);
+                    }
+
+                    // Find the related schoolSectionGradeCourses matching course_id
+                    $schoolSectionGradeCourse = $schoolGradeSection->schoolSectionGradeCourses
+                        ->where('course_id', $request->course_id)
+                        ->first();
+
+                    if (!$schoolSectionGradeCourse) {
+                        return response()->json(['message' => 'Course not found'], 404);
+                    }
+                    $teacherExist = $schoolSectionGradeCourse->schoolGradeSectionCourseTeacher()
+                                                            ->where('teacher_id', $request->teacher_id)
+                                                            ->exists();
+                    if($teacherExist){
+                        return response()->json(['message'=>"This Teacher already assigned to this course section !"]);
+                    }
+                    $schoolSectionGradeCourse->schoolGradeSectionCourseTeacher()->create([
+                        'teacher_id' => $request->teacher_id
+                    ]);
+
+                    return response()->json(['message' => 'Teacher assigned successfully']);
+                }
 
                 public function delete($id)
                 {

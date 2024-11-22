@@ -7,6 +7,9 @@
             {
                 public function getAll();
                 public function getStudentBySchool($student_id);
+                public function courses($id);
+                public function coursesChapterCount($courseId);
+                public function courseDetails($unique_id);
                 public function getById($id);
                 public function create(StudentRequest $request);
                 public function update($id, StudentRequest $request);

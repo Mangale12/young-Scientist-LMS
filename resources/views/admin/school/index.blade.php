@@ -297,6 +297,7 @@
           <thead>
             <tr>
               <th>Title</th>
+              <th>Teacher</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -336,20 +337,7 @@
           </div>
           <hr>
         </div>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Code</th>
-              <th>Subject Expert</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="grade-section-teacher-list">
-            <!-- Rows will be populated here dynamically -->
-          </tbody>
-        </table>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -357,6 +345,7 @@
     </div>
   </div>
 </div>
+
 @endsection
 <!-- ./wrapper -->
 @section('scripts')
@@ -591,7 +580,7 @@
                  tbody.empty(); // Clear existing rows
                  // Loop through the students received in the response and append rows
                  $('#selectSectionStudent').empty().append('<option value="">Select Student</option>');
-                 response.students.forEach(student => {
+                 response.students.school_grade_section_grade_student.forEach(student => {
                      const row = `
                        <tr>
                          <td>${student.student.user.name}</td>
@@ -607,6 +596,7 @@
                      tbody.append(row);
                  });
                  response.allStudent.forEach(student => {
+                  console.log(student);
                     const sectionOption = `<option value="${student.id}">${student.user.name}</option>`;
                     $('#selectSectionStudent').append(sectionOption);
                   })
@@ -641,12 +631,12 @@
                      const row = `
                        <tr>
                          <td>${course.course.title}</td>
-                         <td>teacher</td>
+                         <td>${course.latest_school_grade_section_course_teacher?.teacher?.user?.name || "N/A"}</td>
                          <td>
-                           <a class="btn btn-danger btn-remove-grade-section-course mx-1" >
+                           <a class="btn btn-danger btn-remove-grade-section-course mx-1" data-course="${course.course.id}">
                              <i class="fas fa-trash"></i>
                            </a>
-                           <a class="btn btn-danger btn-grade-section-teacher-list mx-1" >
+                           <a class="btn btn-danger btn-grade-section-teacher-list mx-1" data-course="${course.course.id}">
                               <i class="fas fa-chalkboard-teacher"></i>
                             </a>
                          </td>
@@ -944,12 +934,7 @@
             });
             $(document).off('click', '.btn-remove-grade-student').on('click', '.btn-remove-grade-student', function (e) {
                 e.preventDefault(); // Prevent default behavior
-
-                var gradeId = $(this).data('grade'); // Get the grade ID
-                var schoolId = $(this).data('school'); // Get the school ID
-                var studentId = $(this).data('student');
-                var sectionId = $(this).data('section');
-
+                var student_id = $(this).data('student');
                 // Confirm removal
                 $.confirm({
                     title: 'Confirm Removal',
@@ -965,16 +950,16 @@
                                     url: '{{ route($_base_route.".grade.section.remove-student") }}', // Dynamic route
                                     type: 'POST',
                                     data: {
-                                        school_id: schoolId, // School ID
-                                        grade_id: gradeId,   // Grade ID
-                                        section_id : sectionId,
-                                        student_id : studentId,
+                                        school_id: school_id, // School ID
+                                        grade_id: grade_id,   // Grade ID
+                                        section_id : section_id,
+                                        student_id : student_id,
                                     },
                                     headers: {
                                         'X-CSRF-TOKEN': "{{ csrf_token() }}" // CSRF token
                                     },
                                     success: function (response) {
-                                      populateGradeStudent(schoolId, gradeId, sectionId); // Refresh the grade list
+                                      populateGradeStudent(school_id, grade_id, section_id); // Refresh the grade list
                                         $.alert({
                                             title: 'Removed!',
                                             content: 'The Student has been successfully removed.',
@@ -1008,6 +993,7 @@
             var grade_id = $(this).data('grade');
             var section_id = $(this).data('section');
             var school_id = $(this).data('school');
+            var course_id = null;
             $('#grade-section-course-list-modal').modal('show');
             populateGradeSectionCourse(school_id, grade_id, section_id);     
             
@@ -1097,34 +1083,51 @@
                     }
                 });
             });
-        });
 
-        $(document).on('click', '.btn-grade-section-teacher-list', function (e) {
-            e.preventDefault(); // Prevent default behavior
-            var grade_id = $(this).data('grade');
-            var section_id = $(this).data('section');
-            var school_id = $(this).data('school');
-            $('#grade-section-teacher-list-modal').modal('show');
-            populateGradeSectionTeacher(school_id, grade_id, section_id);     
-            
-            
-            $(document).off('click', '.btn-add-grade-section-course').on('click', '.btn-add-grade-section-course', function (e) {
+            $(document).off('click', '.btn-grade-section-teacher-list').on('click', '.btn-grade-section-teacher-list', function (e) {
               e.preventDefault(); // Prevent default behavior
-              var course_id = $('#selectSectionCourse').val(); // Get selected grade value
-              if (!course_id) {
-                  alert("Please select a Course.");
+              // AJAX request to add grade
+              course_id = $(this).data('course');
+              $('#grade-section-course-teacher-list-modal').modal('show')
+              $('#selectSectionTeacher').empty().append('<option selected disabled>Select Teacher</option>');
+              $.ajax({
+                  url: '{{route($_base_route.".grade.section.course.teachers")}}', // Dynamic course ID in route
+                  type: "GET",
+                  headers: {
+                      'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
+                  },
+                  success: function (response) {
+                    response.forEach(teacher => {
+                      const sectionOption = `<option value="${teacher.id}">${teacher.user.name}</option>`;
+                      $('#selectSectionTeacher').append(sectionOption);
+                    })
+                  },
+                  error: function (xhr, status, error) {
+                      console.error("Error:", error);
+                      alert("Error adding Teacher. Please try again."+ error);
+                  }
+              });
+            });
+
+
+            $(document).off('click', '.btn-add-grade-section-teacher').on('click', '.btn-add-grade-section-teacher', function (e) {
+              e.preventDefault(); // Prevent default behavior
+              var teacher_id = $('#selectSectionTeacher').val(); // Get selected grade value
+              if (!teacher_id) {
+                  alert("Please select a Teacher.");
                   return;
               }
 
               // AJAX request to add grade
               $.ajax({
-                  url: '{{route($_base_route.".grade.section.add-course")}}', // Dynamic course ID in route
+                  url: '{{route($_base_route.".grade.section.course.assign-teacher")}}', // Dynamic course ID in route
                   type: "POST",
                   data: {
                       school_id: school_id,
                       grade_id: grade_id,
                       section_id : section_id,
                       course_id : course_id,
+                      teacher_id : teacher_id,
                   },
                   headers: {
                       'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
@@ -1132,6 +1135,7 @@
                   success: function (response) {
                     populateGradeSectionCourse(school_id, grade_id, section_id); // Re-populate grades
                     alert(response.message);
+                    $('#grade-section-course-teacher-list-modal').modal('hide');
                   },
                   error: function (xhr, status, error) {
                       console.error("Error:", error);
@@ -1139,64 +1143,7 @@
                   }
               });
             });
-            $(document).off('click', '.btn-remove-grade-section-course').on('click', '.btn-remove-grade-section-course', function (e) {
-                e.preventDefault(); // Prevent default behavior
-                var course_id = $(this).data('course');
-                // Confirm removal
-                $.confirm({
-                    title: 'Confirm Removal',
-                    content: 'This Course will no longer be in this section. Are you sure you want to proceed?',
-                    type: 'red',
-                    buttons: {
-                        confirm: {
-                            text: 'Yes, Remove',
-                            btnClass: 'btn-red',
-                            action: function () {
-                                // AJAX request to remove the grade
-                                $.ajax({
-                                    url: '{{ route($_base_route.".grade.section.remove-course") }}', // Dynamic route
-                                    type: 'POST',
-                                    data: {
-                                        school_id: school_id, // School ID
-                                        grade_id: grade_id,   // Grade ID
-                                        section_id : section_id,
-                                        course_id : course_id,
-                                    },
-                                    headers: {
-                                        'X-CSRF-TOKEN': "{{ csrf_token() }}" // CSRF token
-                                    },
-                                    success: function (response) {
-                                      populateGradeSectionCourse(school_id, grade_id, section_id); // Refresh the grade list
-                                        $.alert({
-                                            title: 'Removed!',
-                                            content: 'The Course has been successfully removed.',
-                                            type: 'green'
-                                        });
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error("Error:", error);
-                                        $.alert({
-                                            title: 'Error!',
-                                            content: 'Error removing the Section. Please try again.',
-                                            type: 'red'
-                                        });
-                                    }
-                                });
-                            }
-                        },
-                        cancel: {
-                            text: 'Cancel',
-                            action: function () {
-                                // No action on cancel
-                            }
-                        }
-                    }
-                });
-            });
-        });
-
-          
-    
+        });    
     });
 </script>
 @endsection
