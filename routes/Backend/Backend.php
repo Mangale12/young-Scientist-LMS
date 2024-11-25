@@ -252,6 +252,7 @@ Route::group(['prefix' => 'course',             'as' => 'course.'], function () 
     Route::get('/create',                              [App\Http\Controllers\Admin\CourseController::class, 'create'])->name('create');
     Route::post('/',                                   [App\Http\Controllers\Admin\CourseController::class, 'store'])->name('store');
     Route::get('/edit/{id}',                           [App\Http\Controllers\Admin\CourseController::class, 'edit'])->name('edit');
+    Route::get('/view/{id}',                           [App\Http\Controllers\Admin\CourseController::class, 'view'])->name('view');
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\CourseController::class, 'update'])->name('update');
     Route::get('/chapters/{id}',                       [App\Http\Controllers\Admin\CourseController::class, 'chapters'])->name('chapters');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('destroy');

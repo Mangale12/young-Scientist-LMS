@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="{{ asset('dist/toastr-master/toastr.css') }}">
   <script src="{{ asset('dist/toastr-master/toastr.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    
   @endsection
 @section('content')
 <div class="wrapper">
@@ -115,7 +115,7 @@
           </div>
           <hr>
         </div>
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="courseTable">
           <thead>
             <tr>
               <th>Course Title</th>
@@ -135,34 +135,29 @@
 </div>
 
 {{-- grade List model --}}
-<!--chpater list Modal -->
-<div class="modal fade" id="grade-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="width: 78vw; left: -35%;">
+<div class="modal fade" id="grade-list-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Grade List</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="form-row align-items-center">
+        <div class="row align-items-center">
           <div class="col-md-5">
             <select name="course" id="gradeSelect" class="form-control">
               <option selected disabled>Select Grade</option>
               @foreach($data['grades'] as $grade)
-              <option value="{{$grade->id}}">{{$grade->name}} </option>
+              <option value="{{$grade->id}}">{{$grade->name}}</option>
               @endforeach
             </select>
           </div>
-          
           <div class="col-md-1">
             <button type="submit" class="btn btn-primary btn-block btn-add-grade">Add</button>
           </div>
-          <hr>
         </div>
-        <table class="table table-bordered">
+        <hr>
+        <table class="table table-bordered" id="gradesTable">
           <thead>
             <tr>
               <th>Grade</th>
@@ -175,37 +170,34 @@
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-{{-- //section list modal --}}
-<div class="modal fade" id="section-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="width: 78vw; left: -35%;">
+
+{{-- // Section List Modal --}}
+<div class="modal fade" id="section-list-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Section List</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="form-row align-items-center">
+        <div class="row align-items-center mb-3">
           <div class="col-md-5">
             <select name="section_id" id="selectSection" class="form-control">
-              
+              <!-- Section options will be populated dynamically -->
             </select>
           </div>
-          
-          <div class="col-md-1">
-            <button type="submit" class="btn btn-primary btn-block btn-add-section">Add</button>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary btn-add-section">Add</button>
           </div>
-          <hr>
         </div>
-        <table class="table table-bordered">
+        <hr>
+        <table class="table table-bordered" id="sectionTable">
           <thead>
             <tr>
               <th>Section</th>
@@ -218,82 +210,75 @@
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-{{-- //Student list modal --}}
-<div class="modal fade" id="grade-section-student-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="width: 78vw; left: -35%;">
+
+{{-- //Student List Modal --}}
+<div class="modal fade" id="grade-section-student-list-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Student List</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="form-row align-items-center">
+        <div class="row align-items-center mb-3">
           <div class="col-md-5">
             <select name="student_id" id="selectSectionStudent" class="form-control">
-              
+              <!-- Options will be populated dynamically -->
             </select>
           </div>
-          
-          <div class="col-md-1">
-            <button type="submit" class="btn btn-primary btn-block btn-add-grade-section-student">Add</button>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary btn-add-grade-section-student">Add</button>
           </div>
-          <hr>
         </div>
-        <table class="table table-bordered">
+        <hr>
+        <table class="table table-bordered" id="studentTable">
           <thead>
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Student Id</th>
+              <th>Student ID</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody id="grade-section-student-list">
-            <!-- Rows will be populated here dynamically -->
+            <!-- Rows will be populated dynamically -->
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-{{-- course list modal --}}
-<div class="modal fade" id="grade-section-course-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="width: 78vw; left: -35%;">
+{{-- Course List Modal --}}
+<div class="modal fade" id="grade-section-course-list-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Course List</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="form-row align-items-center">
+        <div class="row align-items-center mb-3">
           <div class="col-md-5">
             <select name="student_id" id="selectSectionCourse" class="form-control">
-              
+              <!-- Options will be populated dynamically -->
             </select>
           </div>
-          
-          <div class="col-md-1">
-            <button type="submit" class="btn btn-primary btn-block btn-add-grade-section-course">Add</button>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary btn-add-grade-section-course">Add</button>
           </div>
-          <hr>
         </div>
-        <table class="table table-bordered">
+        <hr>
+        <table class="table table-bordered" id="sectionCorseTable">
           <thead>
             <tr>
               <th>Title</th>
@@ -302,49 +287,44 @@
             </tr>
           </thead>
           <tbody id="grade-section-course-list">
-            <!-- Rows will be populated here dynamically -->
+            <!-- Rows will be populated dynamically -->
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-{{-- graded-section-course-teacher list modal --}}
-<div class="modal fade" id="grade-section-course-teacher-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="width: 78vw; left: -35%;">
+{{-- Grade Section Course Teacher List Modal --}}
+<div class="modal fade" id="grade-section-course-teacher-list-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Course List</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="form-row align-items-center">
+        <div class="row align-items-center mb-3">
           <div class="col-md-5">
             <select name="teacher" id="selectSectionTeacher" class="form-control">
-              
+              <!-- Options will be populated dynamically -->
             </select>
           </div>
-          
-          <div class="col-md-1">
-            <button type="submit" class="btn btn-primary btn-block btn-add-grade-section-teacher">Add</button>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary btn-add-grade-section-teacher">Add</button>
           </div>
-          <hr>
         </div>
-        
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
+
 
 @endsection
 <!-- ./wrapper -->
@@ -387,6 +367,15 @@
             ]
         });
 
+        function dataTableProperties(table){
+          table.DataTable({
+                        responsive: true, // Make table responsive
+                        paging: true,     // Enable pagination
+                        searching: true,  // Enable search
+                        ordering: true,   // Enable sorting
+                        autoWidth: false  // Disable auto-width for better control
+                    });
+        }
 
         function populateCourseChapters(id) {
           $.ajax({
@@ -482,38 +471,52 @@
           });
         });
 
-        // function to add remove grades
-        function populateGrades(id){
-          $.ajax({
-            url: '{{ route($_base_route.".grades", ":id") }}'.replace(':id', id), // Dynamic course ID in route
-            type: "GET",
-            headers: {
-              'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
-            },
-            success: function(response) {
-              const tbody = $('#gradeList');
-              tbody.empty(); // Clear existing rows
+        function populateGrades(id) {
+            $.ajax({
+                url: '{{ route($_base_route.".grades", ":id") }}'.replace(':id', id), // Dynamic course ID in route
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
+                },
+                success: function(response) {
+                    const tbody = $('#gradeList');
+                    const table = $('#gradesTable'); // Assuming your table has the ID `gradesTable`
 
-              // Loop through the chapters received in the response and append rows
-              response.forEach(grade => {
-                const row = `
-                  <tr>
-                    <td>${grade.name}</td>
-                    <td>
-                      <a class="btn btn-danger remove-grade mx-1" data-grade="${grade.id}" data-school="${id}"><i class="fas fa-trash "></i>
-                      <a class="btn btn-primary btn-section-list" data-grade="${grade.id}" data-school="${id}"><i class="fas fa-list"></i></a>
-                    </td>
-                  </tr>
-                `;
-                tbody.append(row);
-              });
-            },
-            error: function(xhr, status, error) {
-              console.error("Failed to load chapters:", error);
-              alert("Error loading chapters. Please try again.");
-            }
-          });
+                    // Destroy existing DataTable (if already initialized)
+                    if ($.fn.DataTable.isDataTable('#gradesTable')) {
+                        table.DataTable().destroy();
+                    }
+
+                    tbody.empty(); // Clear existing rows
+
+                    // Loop through the grades received in the response and append rows
+                    response.forEach(grade => {
+                        const row = `
+                            <tr>
+                                <td>${grade.name}</td>
+                                <td>
+                                    <a class="btn btn-danger remove-grade mx-1" data-grade="${grade.id}" data-school="${id}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    <a class="btn btn-primary btn-section-list" data-grade="${grade.id}" data-school="${id}">
+                                        <i class="fas fa-list"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
+
+                    // Initialize or Reinitialize DataTable
+                    dataTableProperties(table);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Failed to load grades:", error);
+                    alert("Error loading grades. Please try again.");
+                }
+            });
         }
+
         function populateSections(school_id, grade_id) {
           // Construct the route dynamically
           const url = '{{ route($_base_route.".grade.sections", [":school_id", ":grade_id"]) }}'
@@ -528,6 +531,11 @@
               },
               success: function (response) {
                   const tbody = $('#sectionList');
+                  // Destroy existing DataTable (if already initialized)
+                  const table = $('#sectionTable');
+                  if ($.fn.DataTable.isDataTable('#sectionTable')) {
+                        table.DataTable().destroy();
+                    }
                   tbody.empty(); // Clear existing rows
                   $('#selectSection').empty().append('<option value="">Select Section</option>');
                   // Loop through the sections received in the response and append rows
@@ -551,6 +559,8 @@
                       `;
                       tbody.append(row);
                   });
+                   // Initialize or Reinitialize DataTable
+                   dataTableProperties(table);
 
                   response.allSection.forEach(section => {
                     const sectionOption = `<option value="${section.id}">${section.name}</option>`;
@@ -577,6 +587,10 @@
              },
              success: function (response) {
                  const tbody = $('#grade-section-student-list');
+                 const table = $('#studentTable');
+                  if ($.fn.DataTable.isDataTable('#studentTable')) {
+                        table.DataTable().destroy();
+                    }
                  tbody.empty(); // Clear existing rows
                  // Loop through the students received in the response and append rows
                  $('#selectSectionStudent').empty().append('<option value="">Select Student</option>');
@@ -595,6 +609,8 @@
                      `;
                      tbody.append(row);
                  });
+                  // Initialize or Reinitialize DataTable
+                  dataTableProperties(table);
                  response.allStudent.forEach(student => {
                   console.log(student);
                     const sectionOption = `<option value="${student.id}">${student.user.name}</option>`;
@@ -622,6 +638,10 @@
              },
              success: function (response) {
                  const tbody = $('#grade-section-course-list');
+                 const table = $('#sectionCourseTable');
+                  if ($.fn.DataTable.isDataTable('#studentTable')) {
+                        table.DataTable().destroy();
+                    }
                  tbody.empty(); // Clear existing rows
                  // Loop through the students received in the response and append rows
                  $('#selectSectionCourse').empty().append('<option value="">Select Course</option>');
@@ -644,6 +664,8 @@
                      `;
                      tbody.append(row);
                  });
+                  // Initialize or Reinitialize DataTable
+                  dataTableProperties(table);
                  response.allCourses.forEach(course => {
                     const sectionOption = `<option value="${course.id}">${course.title}</option>`;
                     $('#selectSectionCourse').append(sectionOption);

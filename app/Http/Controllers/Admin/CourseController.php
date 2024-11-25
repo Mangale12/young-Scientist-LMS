@@ -35,7 +35,8 @@ class CourseController extends DM_BaseController
                         $editButton = view('admin.section.buttons.button-edit', ['id' => $row->id, 'route' => route($this->base_route.'.edit', $row->id)]);
                         $deleteButton = view('admin.section.buttons.button-delete', ['id' => $row->id, 'route' => route($this->base_route.'.destroy', $row->id)]);
                         $addChapter = view('admin.section.buttons.button-add-chapter', ['id' => $row->id, 'route' => route($this->base_route.'.chapters', $row->id)]);
-                        return $editButton.' '.$deleteButton. ' '.$addChapter;
+                        $viewButton = view('admin.section.buttons.button-view', ['id' => $row->id, 'route' => route($this->base_route.'.view', $row->id)]);
+                        return $editButton. ' '.$addChapter.' '.$viewButton.' '.$deleteButton;
                     })
                     ->addColumn('description', function ($row) {
                         return $row->description; // return the raw description content
