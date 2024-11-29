@@ -110,6 +110,8 @@
   </div>
 </div>
 
+
+
 {{-- add new chpater --}}
 <div class="modal fade chapter-form-modal" id="chapter-form-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -152,6 +154,87 @@
                 @endif
               </div>
 
+              
+            
+              {{-- @include('admin.section.status-create') --}}
+            
+              <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </form>
+          <!-- /.card -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Topic list Modal -->
+<div class="modal fade" id="topic-list-modal" tabindex="-1" role="dialog" aria-labelledby="topicModalDialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width: 78vw; left: -35%;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="topicModalDialog">Chapter Topic List</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <button id="new-topic" class="btn btn-primary btn-add-topic"> Add New <i class="fa fa-plus"></i></button>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Chapter Category</th>
+              <th>Chapter</th>
+              <th>Course</th>
+              <th>Assignment</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="chapterTopicList">
+            <!-- Rows will be populated here dynamically -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- add new Topic --}}
+<div class="modal fade topic-form-modal" id="topic-form-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width: 78vw; left: -35%;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add New Topic</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">New Topic</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form enctype='multipart/form-data' action="{{ route($_base_route.'.chapters.topic.store') }}">
+            @csrf
+            <div class="card-body row">
+              <div class="form-group col-12">
+                <label for="title">Title *</label>
+                <input type="text" class="form-control" id="topic-title" name="title" value="{{ old('title') }}" placeholder="Chapter Title">
+                @if($errors->has('title'))
+                <p id="topic-title-error" class="topic-block text-danger"><span>{{ $errors->first('title') }}</span></p>
+                @endif
+              </div>
               <div class="form-group col-12">
                 <label for="description">Description *</label>
                 <textarea name="description" id="description" class="form-control description">{{ old('description') }}</textarea>
@@ -162,7 +245,6 @@
                   <textarea name="assignment" id="assignment" class="form-control assignment">{{ old('assignment') }}</textarea>
                   
               </div>
-            
               {{-- @include('admin.section.status-create') --}}
             
               <div class="card-footer">
@@ -212,7 +294,9 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
-
+        // Initialize the rich text editor
+        var editor1 = new RichTextEditor("#description");
+        var editor2 = new RichTextEditor("#assignment");
         // Sample data - replace with your actual data
         const courseChapters = [
           { title: 'Introduction to Course', category: 'Basic', assignment: 'Assignment 1' },
@@ -246,6 +330,12 @@
                         data-title="${chapter.title}" 
                         data-assignment="${chapter.assignment || ''}"
                         data-category="${chapter.chapter_category.id}">Edit</button>
+                        <button class="btn btn-sm btn-primary  btn-topic-list" 
+                        data-id="${chapter.id}" 
+                        data-description="${chapter.description || ''}" 
+                        data-title="${chapter.title}" 
+                        data-assignment="${chapter.assignment || ''}"
+                        data-category="${chapter.chapter_category.id}">Topics</button>
                       <button class="btn btn-sm btn-danger">Delete</button>
                     </td>
                   </tr>
@@ -260,18 +350,137 @@
           });
         }
 
+        //Function to populate topic list 
+        function populateChapterTopic(courseId, chapterId) {
+          const url = '{{ route($_base_route.".chapters.topic", [":course_id", ":chapter_id"]) }}'
+            .replace(':course_id', courseId)
+            .replace(':chapter_id', chapterId);
+
+          $.ajax({
+            url: url,
+            type: "GET",
+            headers: {
+              'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
+            },
+            success: function(response) {
+              const tbody = $('#chapterTopicList');
+              tbody.empty(); // Clear existing rows
+
+              // Check if the response contains a chapter object
+              if (response.chapter && response.chapter.topics && response.chapter.topics.length > 0) {
+                const chapter = response.chapter;
+                const topics = chapter.topics;
+                // Loop through the topics and append rows
+                topics.forEach(topic => {
+                  const topicRow = `
+                    <tr>
+                      <td>${topic.title}</td>
+                    <td>${chapter.chapter_category ? chapter.chapter_category.name : 'N/A'}</td>
+                      <td><strong>Chapter: ${chapter.title}</strong></td>
+                      <td>${response.course.title}</td>
+                      <td>assignment</td>
+                      <td>
+                        <button class="btn btn-sm btn-primary btn-topic-edit" 
+                          data-id="${topic.id}" 
+                          data-title="${topic.title}" 
+                          data-description="${topic.description || ''}">Edit</button>
+                        <button class="btn btn-sm btn-danger btn-topic-delete" 
+                          data-id="${topic.id}">Delete</button>
+                      </td>
+                    </tr>
+                  `;
+                  tbody.append(topicRow);
+                });
+              } else {
+                const emptyRow = `<tr><td colspan="4">No topics found for this chapter.</td></tr>`;
+                tbody.append(emptyRow);
+              }
+            },
+            error: function(xhr, status, error) {
+              console.error("Failed to load chapter topics:", error);
+              alert("Error loading chapter topics. Please try again.");
+            }
+          });
+        }
+
+
         $(document).on('click', '.btn-chapter-list', function(e) {
             e.preventDefault();
-            var id = $(this).data('id')
-            $('.course-id').val(id);
-            populateCourseChapters(id);
-            $('#chapter-list-modal').modal('show')
+            var chapter_id = null;
+            // Get the ID from the clicked button's data attribute
+            var id = $(this).data('id');
+            $('.course-id').val(id); // Set the course ID in a hidden input
+            populateCourseChapters(id); // Populate chapters based on the course ID
+            
+            // Show the chapter list modal
+            $('#chapter-list-modal').modal('show');
+
+            // Initialize the rich text editor for topic buttons
+            $(document).off('click', '.btn-topic-list').on('click', '.btn-topic-list', function(e) {
+                e.preventDefault(); // Prevent default behavior
+                chapter_id = $(this).data('id');
+                populateChapterTopic(id, chapter_id);
+                // Show the chapter topic list modal
+                $('#topic-list-modal').modal('show');
+            });
+
+            // chapter form submit
+          $(document).off('submit', '#topic-form-modal form').on('submit', '#topic-form-modal form', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            let form = $(this);
+            let url = form.attr('action') || '/chapters'; // Update with the actual endpoint
+            let data = new FormData(this); // For handling file uploads
+            data.append('course_id', id);
+            data.append('chapter_id', chapter_id);
+            let submitButton = form.find('button[type="submit"]');
+            submitButton.prop('disabled', true).text('Submitting...');
+            
+            $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
+                },
+                url: url,
+                method: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    alert('Topic created successfully!');
+                    form[0].reset();
+                    editor1.setHTML(""); // Clear the editor content
+                    editor2.setHTML(""); // Clear the editor content
+                    $('#topic-form-modal').modal('hide');
+                    populateChapterTopic(id, chapter_id);
+                    // Refresh the page or update the DOM as needed
+                },
+                error: function(xhr) {
+                    // Print server errors
+                    console.error(xhr.responseText);
+                    let errors = xhr.responseJSON?.errors;
+
+                    if (errors) {
+                        form.find('.topic-block.text-danger').remove(); // Clear previous errors
+                        for (const [field, messages] of Object.entries(errors)) {
+                            let errorMessage = `<p class="topic-block text-danger"><span>${messages.join('<br>')}</span></p>`;
+                            $(`#topic-${field}`).after(errorMessage); // Append error message near the field
+                        }
+                    } else {
+                        alert('Something went wrong. Please try again.');
+                    }
+                },
+                complete: function() {
+                    submitButton.prop('disabled', false).text('Submit');
+                }
+            });
+          });
         });
-        // Initialize the rich text editor
-        var editor1 = new RichTextEditor("#description");
-        var editor2 = new RichTextEditor("#assignment");
+        
         $('.btn-add-chapter').on('click', function(){
           $('#chapter-form-modal').modal('show');
+        })
+        //btn new Topic form
+        $('.btn-add-topic').on('click', function(){
+          $('#topic-form-modal').modal('show');
         })
         // chapter form submit
         $(document).on('submit', '#chapter-form-modal form', function(e) {
@@ -318,6 +527,9 @@
                   submitButton.prop('disabled', false).text('Submit');
               }
           });
+
+
+
         });
 
       $(document).on('click', '.btn-chapter-edit', function (e) {

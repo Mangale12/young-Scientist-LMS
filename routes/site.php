@@ -9,10 +9,21 @@ Route::group(['prefix'=>'student', 'as'=>'student.', 'middleware'=>'role:admin']
     Route::get('/course-list', [App\Http\Controllers\Admin\StudentController::class, 'courses'])->name('courses');
     Route::get('/course/chapter-count/|{course_id}', [App\Http\Controllers\Admin\StudentController::class, 'coursesChapterCount'])->name('course-chapter-count');
     Route::get('/course-details/{unique_id}', [App\Http\Controllers\Admin\StudentController::class, 'courseDetails'])->name('course-details');
+    Route::get('/course-details/{course_id}/chapter/{chapter_id}/topic/{topic_id}', [App\Http\Controllers\Admin\StudentController::class, 'topicDetails'])->name('topic-details');
+    // Route::get('/course-details/{course_id}//topic/{topic_id}', [App\Http\Controllers\Admin\StudentController::class, 'ajaxTopicDetails'])->name('ajax-topic-details');
     
 });
+// teacher routes
+
 Route::group(['prefix'=>'teacher', 'as'=>'teacher.'], function(){
     Route::post('/', [App\Http\Controllers\Admin\TeacherController::class, 'store'])->name('store');
+    Route::get('/about', [App\Http\Controllers\Site\TeacherController::class, 'about'])->name('about');
+    Route::get('/contact', [App\Http\Controllers\Site\TeacherController::class, 'contact'])->name('contact');
+    Route::get('/dashboard', [App\Http\Controllers\Admin\TeacherController::class, 'dashboard'])->name('dashboard');
+    Route::get('/course-list', [App\Http\Controllers\Admin\TeacherController::class, 'courseList'])->name('courses');
+    Route::get('/course/chapter-count/|{course_id}', [App\Http\Controllers\Admin\TeacherController::class, 'coursesChapterCount'])->name('course-chapter-count');
+    Route::get('/course-details/{unique_id}', [App\Http\Controllers\Admin\TeacherController::class, 'courseDetails'])->name('course-details');
+    Route::get('/course-details/{course_id}/chapter/{chapter_id}/topic/{topic_id}', [App\Http\Controllers\Admin\TeacherController::class, 'topicDetails'])->name('topic-details');
     Route::get('/logout', [App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
 });
 Route::get('/', [App\Http\Controllers\Site\SiteController::class, 'index'])->name('');

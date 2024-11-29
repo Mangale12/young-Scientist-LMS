@@ -61,6 +61,37 @@ class TeacherController extends DM_BaseController
     public function store(TeacherRequest $request){
         return $this->repository->create($request);
     }
+
+    public function dashboard(){
+        $route = 'site.teacher';
+        return view('site.user.dashboard', compact('route'));
+    }
+
+    // for teacher dashboard
+    public function courseList(){
+        return $this->repository->courseList(1);
+    }
+    public function coursesChapterCount($courseId){
+        return $this->repository->coursesChapterCount($courseId);
+    }
+
+    public function courseDetails(Request $request, $unique_id){
+        $route = 'site.student';
+        if($request->ajax()){
+            return $this->repository->courseDetails($unique_id);
+        }else{
+            return view('site.user.course.course', compact('unique_id', 'route'));
+        }
+    }
+
+    public function topicDetails(Request $request, $course_id, $chapter_id, $topic_id){
+        $route = 'site.student';
+        if($request->ajax()){
+            return $this->repository->topicDetails($course_id, $chapter_id, $topic_id);
+        } else{
+            return view('site.user.course.topic', compact('course_id', 'chapter_id', 'topic_id', 'route'));
+        }
+    }
         
     
 }

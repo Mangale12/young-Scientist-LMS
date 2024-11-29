@@ -62,5 +62,144 @@
                     $model = $this->getById($id);
                     return $model->delete();
                 }
+
+                // teacher fiunction staart
+
+                public function courseList($id)
+                {
+                    // Retrieve the teacher by ID
+                    $teacher = $this->getById($id);
+                
+                    if (!$teacher) {
+                        return response()->json(['message' => 'Teacher not found'], 404);
+                    }
+                
+                    // Eager load the related courses and their details
+                    $teacher->load([
+                        'schoolGradeSectionCourseTeacher.schoolGradeSectionCourse.course'
+                    ]);
+                
+                    // Format the response to include nested course details
+                    $courses = $teacher->schoolGradeSectionCourseTeacher->map(function ($item) {
+                        $schoolGradeCourse = $item->schoolGradeSectionCourse;
+                
+                        // Check if course data exists
+                        $courseDetails = $schoolGradeCourse->course ?? null;
+                
+                        return [
+                            'school_grade_course_id' => $schoolGradeCourse->id ?? null,
+                            'school_grade_section_id' => $schoolGradeCourse->school_grade_section_id ?? null,
+                            'course_id' => $courseDetails->id ?? null,
+                            'course_title' => $courseDetails->title ?? 'No Title Available',
+                            'course_description' => $courseDetails->description ?? 'No Description Available',
+                            'unique_id' => $courseDetails->unique_id ?? 'N/A',
+                            // Include any additional fields if necessary
+                        ];
+                    });
+                
+                    // Return the formatted response
+                    return response()->json([
+                        'teacher' => [
+                            'id' => $teacher->id,
+                            'name' => $teacher->name,
+                            'unique_id' => $teacher->unique_id,
+                            // Add other relevant teacher details if necessary
+                        ],
+                        'courses' => $courses,
+                    ], 200);
+                }
+                
+                
+                public function coursesChapterCount($courseId){
+                    
+                    return response()->json($this->courseRepository->getChapterCount($courseId));
+                }
+
+                // public function courseDetails($unique_id)
+                // {
+                //     $course = $this->courseRepository->getByUniqueId($unique_id);
+
+                //     if (!$course) {
+                //         return response()->json(['message' => 'Course not found'], 404);
+                //     }
+
+                //     // Eager load the chapter relationship along with its topics and chapterCategory
+                //     $course->load([
+                //         'chapter' => function ($query) {
+                //             $query->select('id', 'course_id', 'title', 'chapter_category_id')
+                //                   ->with([
+                //                       'topics:id,chapter_id,title', // Include the foreign key `chapter_id`
+                //                       'chapterCategory:id,name'
+                //                   ]);
+                //         }
+                //     ]);
+                    
+
+                //     return response()->json(['course' => $course], 200);
+                // }
+
+                public function courseDetails($unique_id)
+                {
+                    $course = $this->courseRepository->getByUniqueId($unique_id);
+
+                    if (!$course) {
+                        return response()->json(['message' => 'Course not found'], 404);
+                    }
+
+                    $course->load([
+                        'chapter' => function ($query) {
+                            $query->select('id', 'course_id', 'title', 'chapter_category_id', 'unique_id')
+                                ->with([
+                                    'topics:id,chapter_id,title,unique_id', // Include the foreign key `chapter_id`
+                                    'chapterCategory:id,name'
+                                ]);
+                        }
+                    ]);
+
+                    return response()->json(['course' => $course]);
+                }
+
+                // public function topicDetails($course_id, $topicId){
+                //     $course = $this->courseRepository->getByUniqueId($course_id);
+                //     $course->load([
+                //         'chapter.topics' => function ($query) use ($topic_id) {
+                //             $query->where('unique_id', $topic_id);
+                //         }
+                //     ]);
+
+                //     // Check for the topic under the specified chapter
+                //     $chapter = $course->chapter->firstWhere('id', $chapter_id);
+                //     $topic = $chapter ? $chapter->topics->first() : null;
+                // }
+
+                public function topicDetails($course_id, $chapter_id, $topic_id)
+                {
+                    // Fetch the course with its chapters and topics
+                    $course = $this->courseRepository->getByUniqueId($course_id);
+
+                    if (!$course) {
+                        return response()->json(['message' => 'Course not found'], 404);
+                    }
+
+                    // Check if the chapter belongs to the course
+                    $chapter = $course->chapter()->where('unique_id', $chapter_id)->first();
+                    if (!$chapter) {
+                        return response()->json(['message' => 'Chapter not found in this course'], 404);
+                    }
+
+                    // Fetch the topic from the chapter
+                    $topic = $chapter->topics()
+                                    ->where('unique_id', $topic_id)
+                                    ->with('assignment')
+                                    ->first();
+                    if (!$topic) {
+                        return response()->json(['message' => 'Topic not found in this chapter'], 404);
+                    }
+
+                    // Return the topic details
+                    return response()->json([
+                        'topic' => $topic,
+                    ]);
+                }
             }
             

@@ -23,7 +23,8 @@ class StudentController extends DM_BaseController
         return view(parent::loadView($this->view_path.'.index'));
     }
     public function dashboard(){
-        return view('site.user.dashboard');
+        $route = 'site.student';
+        return view('site.user.dashboard', compact('route'));
     }
     public function courses(){
         return $this->repository->courses(auth()->user()->id);
@@ -33,12 +34,23 @@ class StudentController extends DM_BaseController
     }
 
     public function courseDetails(Request $request, $unique_id){
+        $route = 'site.student';
         if($request->ajax()){
             return $this->repository->courseDetails($unique_id);
         }else{
-            return view('site.user.course.details', compact('unique_id'));
+            return view('site.user.course.course', compact('unique_id', 'route'));
         }
     }
+
+    public function topicDetails(Request $request, $course_id, $chapter_id, $topic_id){
+        $route = 'site.student';
+        if($request->ajax()){
+            return $this->repository->topicDetails($course_id, $chapter_id, $topic_id);
+        } else{
+            return view('site.user.course.topic', compact('course_id', 'chapter_id', 'topic_id', 'route'));
+        }
+    }
+    
     // Fetch data for the DataTable
     public function getData(Request $request){
         if ($request->ajax()) {

@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 .banner-inner .banner-img {
   width: 100%;
   background-color: #5e33a4;
@@ -11,12 +12,14 @@
   top: 50%;
   bottom: 0;
 }
+
 .group-member .group-profile img {
   height: 150px;
   background-color: #ffffff;
   border-radius: 20px;
   padding: 5px;
 }
+
 .group-member .group-profile h2 {
   font-size: 36px;
   font-weight: 600;
@@ -29,6 +32,7 @@
   overflow: hidden;
   margin: 0 auto;
 }
+
 .group-member-list .member .profile img {
   width: 100%;
   height: 100%;
@@ -37,17 +41,25 @@
 .itinery__item {
   width: 100%;
 }
+
 .itinery__item span {
   color: #FFD500;
   font-weight: 500;
 }
+
+.itinery h4 {
+  margin-bottom: 90px;
+}
+
 .itinery h5 {
   font-size: 18px;
 }
+
 .itinery .itinery a.accordion-button {
   padding: 0px;
   padding: 20px 0px;
 }
+
 .itinery a.accordion-button.collapsed {
   background: #572f97 !important;
   color: #fff !important;
@@ -56,9 +68,11 @@
   text-decoration: none !important;
   border-radius: 5px;
 }
+
 .itinery .accordion-button::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23ffffff' d='M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z'/%3E%3C/svg%3E") !important;
 }
+
 .itinery .accordion-button:not(.collapsed) {
   color: #fff;
   background-color: #9C27B0 !important;
@@ -78,9 +92,11 @@ ul {
   padding-left: 0px;
   margin-bottom: 0rem;
 }
+
 ul li {
   list-style-type: none;
 }
+
 ul li a {
   text-decoration: none;
   font-size: 16px;
@@ -104,22 +120,27 @@ span.avatar {
   /* Arrow flipping */
   /* Add transition for smooth arrow flip */
 }
+
 .header__navbar--left a {
   padding: 15px;
   display: block;
   font-weight: 600;
 }
+
 .header__navbar--left a i {
   font-size: 22px;
 }
+
 .header__navbar--right a {
   padding: 10px 20px;
   display: block;
   font-weight: 600;
 }
+
 .header__navbar .dropdown {
   position: relative;
 }
+
 .header__navbar .dropdown-menu {
   display: none;
   position: absolute;
@@ -131,24 +152,30 @@ span.avatar {
   z-index: 1;
   min-width: 200px;
 }
+
 .header__navbar .dropdown-menu li {
   list-style: none;
   padding: 10px 20px;
 }
+
 .header__navbar .dropdown-menu li a {
   text-decoration: none;
   color: #333;
 }
+
 .header__navbar .dropdown:hover .dropdown-menu {
   display: block;
 }
+
 .header__navbar .dropdown:hover .arrow {
   transform: rotate(180deg);
   transition: transform 0.3s;
 }
+
 .header__navbar .arrow {
   transition: transform 0.3s;
 }
+
 .header .dropdown-menu a {
   padding: 0px 0px 0px 0px;
 }
@@ -157,6 +184,7 @@ span.avatar {
   background-color: #f2f2f2;
   border: 1px solid #c1c1c1;
 }
+
 .banner-profile--details--img img {
   height: 100px;
   width: 100px;
@@ -168,12 +196,15 @@ span.avatar {
 .my-learning {
   background-color: #02042b;
 }
+
 .my-learning a.active {
   border-bottom: 5px solid #f18500;
 }
+
 .my-learning nav ul li {
   list-style-type: none;
 }
+
 .my-learning nav ul li a {
   color: #ffffff;
   text-decoration: none;
@@ -189,6 +220,7 @@ span.avatar {
   margin-right: 20px;
   background: #edf2fa;
 }
+
 .my-learning-tag .nav-link.active {
   background-color: #f18500;
 }
@@ -200,20 +232,23 @@ span.avatar {
   background-color: #ffffff;
   border-radius: 5px;
 }
+
 .groups .profile img {
   width: 100%;
   height: 100%;
   -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: contain;
   background-color: #fdfdfd;
   border-radius: 20px;
   padding: 5px;
 }
+
 .groups .image-stack {
   position: relative;
   width: 80px;
   height: 40px;
 }
+
 .groups .image-stack img {
   position: absolute;
   width: 40px;
@@ -221,57 +256,73 @@ span.avatar {
   border-radius: 50%;
   top: 0;
 }
+
 .groups .img1 {
   left: 0;
   z-index: 3;
 }
+
 .groups .img2 {
   left: 15px;
   z-index: 2;
 }
+
 .groups .img3 {
   left: 30px;
   z-index: 1;
 }
+
 .groups .tulip {
   position: absolute;
-  width: 15px; /* Adjust size as needed */
-  height: 15px; /* Adjust size as needed */
-  left: 25px; /* Position it over the desired image */
-  top: 12px; /* Adjust to fine-tune positioning */
-  z-index: 4; /* Ensure the tulip appears above all images */
+  width: 15px;
+  /* Adjust size as needed */
+  height: 15px;
+  /* Adjust size as needed */
+  left: 25px;
+  /* Position it over the desired image */
+  top: 12px;
+  /* Adjust to fine-tune positioning */
+  z-index: 4;
+  /* Ensure the tulip appears above all images */
 }
 
 .courses {
   /* Chrome, Safari, Opera */
   /* Firefox */
 }
+
 .courses__details {
   overflow: hidden;
 }
+
 .courses__details .banner {
   height: 150px;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
+
 .courses__details--content a {
   font-size: 20px;
   font-weight: 600;
   color: #02042b;
   text-decoration: none;
 }
+
 .courses progress::-webkit-progress-bar {
   background-color: #e0e0e0;
   /* Background of the bar */
 }
+
 .courses progress::-webkit-progress-value {
   background-color: #4caf50;
   /* Color of the progress */
 }
+
 .courses progress::-moz-progress-bar {
   background-color: #4caf50;
   /* Color of the progress */
 }
+
 .courses progress {
   width: 100%;
   height: 5px;
@@ -283,27 +334,32 @@ span.avatar {
 .footer {
   background-color: #2d2f31;
 }
+
 .footer h6 {
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 15px;
   color: #ffffff;
 }
+
 .footer a {
   display: block;
   line-height: 36px;
   text-decoration: none;
   color: #ffffff;
 }
+
 .footer p {
   line-height: 30px;
   color: #ffffff;
 }
+
 .footer__nav a {
   padding: 0px 20px;
   font-size: 16px;
   font-weight: 600;
 }
+
 .footer .line {
   height: 2px;
   background-color: #EFEFEF;
@@ -312,9 +368,11 @@ span.avatar {
 .inner--banner {
   position: relative;
 }
+
 .inner--banner img {
   width: 100%;
 }
+
 .inner--banner__details {
   position: absolute;
   left: 0;
@@ -322,6 +380,7 @@ span.avatar {
   right: 0;
   bottom: 30px;
 }
+
 .inner--banner__details h1 {
   font-size: 44px;
   font-weight: 700;
@@ -334,6 +393,7 @@ span.avatar {
   padding-left: 20px;
   padding-bottom: 10px;
 }
+
 .learning-details ul li::before {
   content: "";
   position: absolute;
@@ -352,6 +412,7 @@ span.avatar {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .login-register label {
   display: inline-block;
   margin-bottom: 15px;
@@ -359,12 +420,14 @@ span.avatar {
   font-weight: 600;
   font-size: 14px;
 }
+
 .login-register .btn-submit {
   background-color: #f18500;
   color: #ffffff;
   border: 1px solid #f18500;
   font-weight: 600;
 }
+
 .login-register .form-container {
   background-color: #EFEFEF;
   padding: 50px;
@@ -374,6 +437,7 @@ span.avatar {
 .summer-camp {
   height: 400px;
 }
+
 .summer-camp img {
   width: 100%;
   -o-object-fit: fill;
@@ -385,22 +449,27 @@ span.avatar {
   border-radius: 5px;
   overflow: hidden;
 }
+
 .courses_available__details img {
   height: 200px;
   width: 100%;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
+
 .courses_available__details .bg-one {
   background-color: #f18500;
 }
+
 .courses_available__details h5 {
   margin-bottom: 0;
 }
+
 .courses_available__content {
   background: #efefef;
   padding: 0px 0px 15px 0px;
 }
+
 .courses_available__content p {
   padding-bottom: 0px;
   margin-bottom: 0px;
@@ -408,6 +477,7 @@ span.avatar {
   display: block;
   padding: 8px 20px;
 }
+
 .courses_available__content p a {
   color: rgb(33, 37, 41);
   text-decoration: none;
@@ -426,10 +496,12 @@ span.avatar {
   margin-bottom: 0px;
   padding-bottom: 0px;
 }
+
 .offer h4 {
   font-weight: bold;
   font-size: 20px;
 }
+
 .offer p {
   font-size: 16px;
   line-height: 26px;
@@ -440,11 +512,13 @@ span.avatar {
   font-weight: bold;
   font-size: 36px;
 }
+
 .end-to-end span {
   font-size: 30px;
   color: #f18500;
   font-weight: 500;
 }
+
 .end-to-end p {
   font-size: 16px;
   line-height: 26px;
@@ -454,6 +528,7 @@ span.avatar {
 .end-to-end-content h5 {
   font-weight: bold;
 }
+
 .end-to-end-content p {
   font-size: 16px;
   font-weight: 500;
@@ -465,7 +540,7 @@ span.avatar {
 .title-robo img {
   width: 100%;
   -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: contain;
 }
 
 .camp-title-bg {
@@ -492,7 +567,7 @@ span.avatar {
   height: auto;
   display: block;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   border-radius: 10px;
 }
 
@@ -502,6 +577,7 @@ span.avatar {
   /* Position the right arrow to the far right */
   /* Style the arrow icons */
 }
+
 .setup .owl-nav .owl-prev,
 .setup .owl-nav .owl-next {
   position: absolute;
@@ -520,14 +596,17 @@ span.avatar {
   z-index: 1000;
   /* Ensure arrows are above other elements */
 }
+
 .setup .owl-nav .owl-prev {
   left: -60px;
   /* Adjust this value to your preference */
 }
+
 .setup .owl-nav .owl-next {
   right: -60px;
   /* Adjust this value to your preference */
 }
+
 .setup .owl-nav .owl-prev i,
 .setup .owl-nav .owl-next i {
   font-size: 20px;
@@ -570,6 +649,7 @@ span.avatar {
 .login-register-btn {
   padding: 4px 0px;
 }
+
 .login-register-btn a {
   text-decoration: none;
   color: #000;
@@ -584,12 +664,14 @@ span.avatar {
   border-color: #cccccc;
   height: 50px;
 }
+
 .login-modals .submit-btn {
   height: 50px;
   background-color: #f18500;
   color: #ffffff;
   font-weight: 600;
 }
+
 .login-modals .submit-sign-up {
   background-color: #3f3f3f;
   color: #ffffff;
@@ -597,24 +679,324 @@ span.avatar {
   text-decoration: none;
   line-height: 36px;
 }
+
 .login-modals .forget-password {
   text-decoration: none;
   color: #f18500;
 }
+
 .login-modals .close-btn-right {
   background-color: #e8e8e8;
   padding: 8px;
 }
+
 .login-modals .position-relative-content {
   position: relative;
-}/*# sourceMappingURL=style.css.map */
+}
 
-.header__navbar--right .try-a-free-class {
-  border: 2px solid #f18500;
+/*# sourceMappingURL=style.css.map */
+
+/* Sidebar positioning */
+.buddypanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #ffffff;
+  color: #ffffff;
+  font-weight: bold;
+  padding-top: 20px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.buddypanel.closed {
+  width: 60px;
+  /* Width of the sidebar when closed */
+}
+
+.buddypanel .side-panel-menu-container {
+  overflow: hidden;
+}
+
+.buddypanel-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.buddypanel-menu li {
+  margin: 10px 0;
+  text-align: left;
+}
+
+.buddypanel-menu a {
+  display: flex;
+  align-items: center;
+  color: #000000;
+  text-decoration: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.buddypanel-menu a:hover {
+  background-color: #e3cfcf;
+}
+
+/* Only show text when the panel is open */
+.buddypanel.closed .menu-text {
+  display: none;
+}
+
+/* Hide icons when the sidebar is closed */
+.buddypanel.closed .fa-icon {
+  font-size: 22px;
+  margin-right: 0;
+}
+
+.panel-head {
+  padding: 0 14px;
+  margin-bottom: 20px;
+}
+
+.bb-toggle-panel i {
+  font-size: 30px;
+  color: #000000;
+  cursor: pointer;
+}
+
+/* Optional - You can add some padding on the body to ensure content doesn't overlap */
+body {
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
+body.sidebar-closed {
+  margin-left: 10px;
+}
+
+.course-container {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #F2F4F5;
+  border-radius: 15px;
+  background-color: #F2F4F5;
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+
+
+.arrow-down::before {
+  content: "▼";
+  font-size: 12px;
+}
+
+.arrow-up::before {
+  content: "▲";
+  font-size: 12px;
+}
+
+.course-section {
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.lesson {
+  margin: 10px 0;
+}
+
+.lesson-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.lesson-header .arrow {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+
+
+.lesson-content {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  display: none;
+  /* Initially hidden */
+}
+
+.lesson-content ul li {
+  list-style-type: inherit;
+  margin-left: 150px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.lesson-info {
+  font-size: 14px;
+  color: #666;
+}
+
+.lock-icon {
+  margin-left: 5px;
+  color: #999;
+}
+
+.course-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 25%;
+  background: #f8f9fa;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar h5 {
+  margin-bottom: 20px;
+}
+
+.lesson-list {
+  list-style: none;
+  padding: 0;
+}
+
+.lesson-list li {
+  margin-bottom: 10px;
+}
+
+.lesson-list a {
+  text-decoration: none;
+  color: black;
+  display: block;
+  padding: 10px;
   border-radius: 5px;
-  padding: 5px 20px;
-  background: #f18500;
-  margin-left: 30px;
-  color: #fff;
-  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.lesson-list a.active {
+  background: #007bff;
+  color: white;
+}
+
+.lesson-list a:hover {
+  background: #ddd;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.progress {
+  margin: 20px 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #007bff;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.scrollable-content {
+  width: 49%;
+  height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0px;
+  margin: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.scrollable-content p {
+  margin: 10px 0;
+}
+
+/* Info card styling */
+.info-card {
+  width: 50%;
+  /* Adjust width to match layout */
+  background-color: #fff;
+  margin-left: 620px;
+  /* Background for card */
+  border: 1px solid #ddd;
+  margin-top: -380px;
+  /* Border to separate card */
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  /* Optional for effect */
+}
+
+/* Previous button styling */
+.prev-button {
+  background-color: #4CAF50;
+  /* Green color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+  display: inline-block;
+  border-radius: 5px;
+  /* Rounded corners */
+}
+
+.prev-button:hover {
+  background-color: #45a049;
+  /* Darker green on hover */
+}
+
+/* Code block styling */
+.code-block {
+  background-color: #f4f4f4;
+  border-left: 4px solid #4CAF50;
+  /* Highlight on the left */
+  padding: 10px;
+  font-family: monospace;
+  font-size: 16px;
+  overflow-x: auto;
+  /* Horizontal scrolling for long code lines */
+}
+
+.contents {
+  margin-left: 400px;
 }

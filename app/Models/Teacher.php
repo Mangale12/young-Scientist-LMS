@@ -19,4 +19,8 @@ class Teacher extends Model
         return $this->belongsToMany(Course::class, 'teacher_courses');
     }
 
+    public function schoolGradeSectionCourseTeacher(){
+        return $this->hasMany(SchoolGradeSectionCourseTeacher::class, 'teacher_id', 'id');
+    }
+
 }

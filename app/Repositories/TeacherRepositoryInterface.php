@@ -9,5 +9,6 @@
                 public function create(TeacherRequest $request);
                 public function update($id, TeacherRequest $request);
                 public function delete($id);
+                public function courseList($id);
             }
             

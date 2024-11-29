@@ -256,6 +256,9 @@ Route::group(['prefix' => 'course',             'as' => 'course.'], function () 
     Route::put('/update/{id}',                         [App\Http\Controllers\Admin\CourseController::class, 'update'])->name('update');
     Route::get('/chapters/{id}',                       [App\Http\Controllers\Admin\CourseController::class, 'chapters'])->name('chapters');
     Route::delete('/{id}',                             [App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('destroy');
+    Route::get('/chapters/{course_id}/{chapter_id}',                  [App\Http\Controllers\Admin\CourseController::class, 'topics'])->name('chapters.topic');
+    Route::post('/chapters/topic',                  [App\Http\Controllers\Admin\CourseController::class, 'topicsStore'])->name('chapters.topic.store');
+
 });
 
 // Course Resource Route

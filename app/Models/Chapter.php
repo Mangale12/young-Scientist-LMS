@@ -30,12 +30,17 @@ class Chapter extends Model
     public function course(){
         return $this->belongsTo(Course::class);
     }
-    public function chapterCategory(){
-        return $this->belongsTo(ChapterCategory::class);
+    public function chapterCategory()
+    {
+        return $this->belongsTo(ChapterCategory::class, 'chapter_category_id', 'id'); 
     }
     public function user(){
         return $this->belongsTo(User::class);
     }
-    
+
+    public function topics()
+    {
+        return $this->hasMany(Topic::class, 'chapter_id', 'id');
+    }
 
 }

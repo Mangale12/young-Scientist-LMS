@@ -17,5 +17,6 @@
                 public function getSchool();
                 public function getGrade();
                 public function getSection();
+                public function topicDetails($course_id, $chapter_id, $topic_id);
             }
             

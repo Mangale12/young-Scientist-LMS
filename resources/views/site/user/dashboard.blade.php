@@ -1,6 +1,8 @@
-    @extends('site.layout.student')
-    @section('content')
-    @include('site.includes.header')
+@extends('site.layout.student')
+@section('content')
+    @include('site.includes.user.sidebar')
+    @include('site.includes.user.nav')
+    
     <section class="banner-profile my-lg-4 my-3 bg-light ">
         <div class="container">
             <div class="banner-profile--details d-flex align-items-center p-3">
@@ -11,16 +13,12 @@
                     <h4 class="fw-bold">
                         Welcome back, {{auth()->user()->name}}
                     </h4>
-                    <p class="fs-5 fw-500">@if(auth()->user()->role === 'student') Class 7 Student @endif <small class="fs-6">
-                        <i class="fa-solid fa-circle text-primary"></i> Active</small>
+                    <p class="fs-5 fw-500">Class 7 Student <small class="fs-6"><i
+                                class="fa-solid fa-circle text-primary"></i> Active</small>
                     </p>
                 </div>
-
-
             </div>
-
         </div>
-
     </section>
     <section class="my-learning pt-4 pb-1">
         <div class="container text-center d-flex flex-column align-items-center">
@@ -70,6 +68,7 @@
 
                     <div class="row justify-content-center g-4 courses-container">
                         
+                        
                     </div>
 
                 </div>
@@ -82,112 +81,95 @@
             </div>
         </div>
     </section>
+@include('site.includes.user.footer')
 
+@endsection
 
+@section('scripts')
+<script>
 
+    $(document).ready(function(){
+        const courseDetailsRoute = "{{ route($route.'.course-details', ':unique_id') }}";
+        function courseChapterCount(courseId) {
+            var count = 0;
+            // Dynamically construct the URL using the course ID
+            let url = `{{ route($route.'.course-chapter-count', ':id') }}`.replace(':id', courseId);
 
-    @endsection
-
-    @section('scripts')
-    <script>1
-        $(document).ready(function(){
-            const courseDetailsRoute = "{{ route('site.student.course-details', ':unique_id') }}";
-            function courseChapterCount(courseId) {
-                var count = 0;
-                // Dynamically construct the URL using the course ID
-                let url = `{{ route('site.student.course-chapter-count', ':id') }}`.replace(':id', courseId);
-
-                $.ajax({
-                    url: url,
-                    type: "GET",
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        $(`.chapter-count-placeholder[data-course-id="${courseId}"]`).text(`${response} Lessons`);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error fetching chapter count:", error);
-                        $(`.chapter-count-placeholder[data-course-id="${courseId}"]`).text("No lessons available");
-                    }
-                });
-                console.log("count out "+count);
-                
-                return count;
-            }
-
-                
-            var url = '{{route("site.student.courses")}}'
-            $.ajax({ 
-             url: url, // Dynamic course ID in route
-             type: "GET",
-             headers: {
-                 'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
-             },
-             success: function (response) {
-                // Check if courses are available
-                if (response.length === 0) {
-                    $(".courses-container").html(`
-                        <div class="col-12 text-center">
-                            <p>No courses available at the moment.</p>
-                        </div>
-                    `);
-                    return;
+            $.ajax({
+                url: url,
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    $(`.chapter-count-placeholder[data-course-id="${courseId}"]`).text(`${response} Lessons`);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching chapter count:", error);
+                    $(`.chapter-count-placeholder[data-course-id="${courseId}"]`).text("No lessons available");
                 }
+            });
+            console.log("count out "+count);
+            
+            return count;
+        }
 
-                // Clear the container before appending new content
-                $(".courses-container").empty();
-
-                // Iterate through the response data
-                response.school_grade_section.school_section_grade_courses.forEach(item => {
-                   
-                        if (!item.course) {
-                            return `
-                                <div class="col-12 text-center">
-                                    <p>No course data available for this student.</p>
-                                </div>`;
-                        }
-                        const courseUrl = courseDetailsRoute.replace(':unique_id', item.course.unique_id);
-                        // Render course card
-                        var courseDetails = `<div class="col-lg-3">
-                                <div class="courses__details border">
-                                    <a href="${courseUrl}">
-                                        <img class="w-100" src="${item.course.thumbnail || '{{asset('images/default-thumbnail.png')}}'}" alt="${item.course.title || 'Course Thumbnail'}">
-                                    </a>
-                                    <div class="courses__details--content p-3">
-                                        <span class="chapter-count-placeholder" data-course-id="${item.course.id}">Loading lessons...</span>
-                                        <a class="d-block my-2" href="#">
-                                            ${item.course.title || "Untitled Course"}
-                                        </a>
-                                        <p>
-                                            Learn the basics of programming, coding structures, and more.
-                                        </p>
-                                        <progress class="w-100" id="file" value="32" max="100">32%</progress>
-                                        <label for="file"><small>32% Complete</small></label>
-                                    </div>
-                                </div>
-                            </div>`;
-                    // Append the generated course cards to the container
-                    $(".courses-container").append(courseDetails);
-                    courseChapterCount(item.course.id)
-                });
-            },
-
-            error: function (xhr, status, error) {
-                console.error("Failed to load Course:", error);
-                alert("Error loading courses. Please try again.");
+            
+        var url = '{{route($route.".courses")}}'
+        $.ajax({ 
+         url: url, // Dynamic course ID in route
+         type: "GET",
+         headers: {
+             'X-CSRF-TOKEN': "{{ csrf_token() }}" // Include CSRF token for protection
+         },
+         success: function (response) {
+            // Check if courses are available
+            if (response.courses.length === 0) {
+                $(".courses-container").html(`
+                    <div class="col-12 text-center">
+                        <p>No courses available at the moment.</p>
+                    </div>
+                `);
+                return;
             }
 
-          });
-        });
-    </script>
-    @endsection
+            // Clear the container before appending new content
+            $(".courses-container").empty();
+            // Iterate through the response data
+            response.courses.forEach(item => {
+                console.log(item);
+                    const courseUrl = courseDetailsRoute.replace(':unique_id', item.unique_id);
+                    // Render course card
+                    var courseDetails = `<div class="col-lg-3">
+                            <div class="courses__details border">
+                                <a href="${courseUrl}">
+                                    <img class="w-100" src="${item.thumbnail || '{{asset('images/default-thumbnail.png')}}'}" alt="${item.course_title || 'Course Thumbnail'}">
+                                </a>
+                                <div class="courses__details--content p-3">
+                                    <span class="chapter-count-placeholder" data-course-id="${item.course_id}">Loading lessons...</span>
+                                    <a class="d-block my-2" href="#">
+                                        ${item.course_title || "Untitled Course"}
+                                    </a>
+                                    <p>
+                                        Learn the basics of programming, coding structures, and more.
+                                    </p>
+                                    <progress class="w-100" id="file" value="32" max="100">32%</progress>
+                                    <label for="file"><small>32% Complete</small></label>
+                                </div>
+                            </div>
+                        </div>`;
+                // Append the generated course cards to the container
+                $(".courses-container").append(courseDetails);
+                courseChapterCount(item.course_id)
+            });
+        },
 
+        error: function (xhr, status, error) {
+            console.error("Failed to load Course:", error);
+            alert("Error loading courses. Please try again.");
+        }
 
-
-   
-
-
-
-
-    
+      });
+    });
+</script>
+@endsection

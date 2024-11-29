@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Assignment extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['chapter_id', 'course_id', 'description', 'file_path', 'unique_id', 'due_date', 'user_id'];
+    protected $fillable = ['topic_id', 'description', 'file_path', 'unique_id', 'due_date', 'user_id'];
 }

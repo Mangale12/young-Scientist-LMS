@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\CourseRepositoryInterface;
 use App\Http\Requests\CourseRequest;
+use App\Http\Requests\TopicRequest;
 use Yajra\DataTables\Facades\DataTables;
 
 class CourseController extends DM_BaseController
@@ -115,11 +116,19 @@ class CourseController extends DM_BaseController
                     'name' => $chapter->chapterCategory->name ?? 'N/A',
                 ],
                 'description' => $chapter->description ?? '',
-                'assignment' => $chapter->assignment->description ?? '' // Ensure assignment is not null
+                'assignment' => '' // Ensure assignment is not null
             ];
         });
 
         return response($transformedChapters);
+    }
+
+    public function topics($course_id, $chapter_id){
+        return $this->repository->topics($course_id, $chapter_id);
+    }
+
+    public function topicsStore(TopicRequest $request){
+        return $this->repository->topicsStore($request);
     }
 
     public function destroy($id){
