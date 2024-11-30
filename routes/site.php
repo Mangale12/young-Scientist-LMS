@@ -10,6 +10,7 @@ Route::group(['prefix'=>'student', 'as'=>'student.', 'middleware'=>'role:admin']
     Route::get('/course/chapter-count/|{course_id}', [App\Http\Controllers\Admin\StudentController::class, 'coursesChapterCount'])->name('course-chapter-count');
     Route::get('/course-details/{unique_id}', [App\Http\Controllers\Admin\StudentController::class, 'courseDetails'])->name('course-details');
     Route::get('/course-details/{course_id}/chapter/{chapter_id}/topic/{topic_id}', [App\Http\Controllers\Admin\StudentController::class, 'topicDetails'])->name('topic-details');
+    Route::post('assignment-submission', [App\Http\Controllers\Admin\StudentController::class, 'assignMentSubmission'])->name('assignment-submision');
     // Route::get('/course-details/{course_id}//topic/{topic_id}', [App\Http\Controllers\Admin\StudentController::class, 'ajaxTopicDetails'])->name('ajax-topic-details');
     
 });
@@ -24,6 +25,7 @@ Route::group(['prefix'=>'teacher', 'as'=>'teacher.'], function(){
     Route::get('/course/chapter-count/|{course_id}', [App\Http\Controllers\Admin\TeacherController::class, 'coursesChapterCount'])->name('course-chapter-count');
     Route::get('/course-details/{unique_id}', [App\Http\Controllers\Admin\TeacherController::class, 'courseDetails'])->name('course-details');
     Route::get('/course-details/{course_id}/chapter/{chapter_id}/topic/{topic_id}', [App\Http\Controllers\Admin\TeacherController::class, 'topicDetails'])->name('topic-details');
+    Route::post('/asssignment-subbmission', [App\Http\Controllers\Admin\TeacherController::class, 'teacherFeedback'])->name('assignment-submision');
     Route::get('/logout', [App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
 });
 Route::get('/', [App\Http\Controllers\Site\SiteController::class, 'index'])->name('');

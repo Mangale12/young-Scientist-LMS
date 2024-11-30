@@ -113,62 +113,107 @@
     }
 
     // Function to fetch topic details and update UI
-    function initializeTopicLinks(url, chapter_id=null, topic_id=null) {
-         // Prevent default link behavior
-         let assignmentSection = '';
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function (response) {
-                    if (!response.topic) {
-                        console.error('Topic not found');
-                        return;
-                    }
-
-                    // Update topic details
-                    $('#topic-details').html(`
-                        <h3>${response.topic.title}</h3>
-                        <button class="prev-button">⬅ Previous</button>
-
-                        <p>${response.topic.description}</p>
-                    `);
-                    if (response.topic.assignment) {
-                        assignmentSection += `
-                            <h4>Assignment for Topic: ${response.topic.title}</h4>
-                            <div class="assignment-description" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9;">
-                                <p><strong>Description:</strong> ${response.topic.assignment.description || 'No description provided.'}</p>
-                            </div>
-                            <!-- Assignment Upload Section -->
-                            <form id="assignment-upload-form-${response.topic.unique_id}" enctype="multipart/form-data" style="margin-top: 20px;">
-                                <div class="mb-3">
-                                    <label for="assignment-file-${response.topic.unique_id}" class="form-label"><strong>Upload Assignment</strong></label>
-                                    <input type="file" id="assignment-file-${response.topic.unique_id}" name="assignment_file" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="assignment-notes-${response.topic.unique_id}" class="form-label"><strong>Additional Notes</strong> (Optional)</label>
-                                    <textarea id="assignment-notes-${response.topic.unique_id}" name="assignment_notes" class="form-control" rows="3" placeholder="Add any additional notes or comments"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit Assignment</button>
-                            </form>`;
-                    }else{
-                        assignmentSection += '<p>No assignments available for this course.</p>';
-                    }
-                    // Append assignment section (or a default message if no assignments exist)
-                    $('.assignment-section').html(assignmentSection);
-                    // Highlight active topic
-                    $('.topic-link').removeClass('active'); // Remove active class from all topics
-                    $(`[data-topic-id="${topic_id}"]`).addClass('active'); // Add active class to the current topic
-
-                    // Highlight active chapter
-                    $('.lesson').removeClass('active-chapter'); // Remove active class from all chapters
-                    $(`[data-chapter-id="${chapter_id}"]`).closest('.lesson').addClass('active-chapter');
-                },
-                error: function (xhr) {
-                    console.error('Failed to fetch topic details', xhr);
+    function initializeTopicLinks(url, course_id = null, chapter_id = null, topic_id = null) {
+        // Prevent default link behavior
+        let assignmentSection = '';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                if (!response.topic) {
+                    console.error('Topic not found');
+                    return;
                 }
-            });
-        
+
+                // Update topic details
+                $('#topic-details').html(`
+                    <h3>${response.topic.title}</h3>
+                    <button class="prev-button">⬅ Previous</button>
+                    <p>${response.topic.description}</p>
+                `);
+
+                if (response.topic.assignment) {
+                    assignmentSection += `
+                        <h4>Assignment for Topic: ${response.topic.title}</h4>
+                        <div class="assignment-description" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9;">
+                            <p><strong>Description:</strong> ${response.topic.assignment.description || 'No description provided.'}</p>
+                        </div>
+                        <!-- Assignment Upload Section -->
+                        <form id="assignment-upload-form-${response.topic.unique_id}" enctype="multipart/form-data" style="margin-top: 20px;" class="assignment-upload-form">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="assignment-file-${response.topic.unique_id}" class="form-label"><strong>Upload Assignment</strong></label>
+                                <input type="file" id="assignment-file-${response.topic.unique_id}" name="assignment_file" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="assignment-notes-${response.topic.unique_id}" class="form-label"><strong>Additional Notes</strong> (Optional)</label>
+                                <textarea id="assignment-notes-${response.topic.unique_id}" name="assignment_notes" class="form-control" rows="3" placeholder="Add any additional notes or comments"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Assignment</button>
+                        </form>`;
+                } else {
+                    assignmentSection += '<p>No assignments available for this course.</p>';
+                }
+
+                // Append assignment section (or a default message if no assignments exist)
+                $('.assignment-section').html(assignmentSection);
+
+                // Highlight active topic
+                $('.topic-link').removeClass('active'); // Remove active class from all topics
+                $(`[data-topic-id="${topic_id}"]`).addClass('active'); // Add active class to the current topic
+
+                // Highlight active chapter
+                $('.lesson').removeClass('active-chapter'); // Remove active class from all chapters
+                $(`[data-chapter-id="${chapter_id}"]`).closest('.lesson').addClass('active-chapter');
+
+                // Attach submit event listener to the dynamically added form
+                $('.assignment-upload-form').on('submit', function (event) {
+                    event.preventDefault();
+
+                    let form = $(this);
+                    let formData = new FormData(this); // Get the form data
+
+                    // Append the topic's unique ID to the form data
+                    formData.append('topic_id', topic_id);
+                    formData.append('chapter_id', chapter_id);
+                    formData.append('course_id', course_id);
+
+                    // Send the POST request
+                    $.ajax({
+                        url: "{{route($route.'.assignment-submision')}}",
+                        type: 'POST',
+                        data: formData,
+                        contentType: false, // Required for file uploads
+                        processData: false, // Prevent jQuery from processing the data
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), // CSRF token for Laravel
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                alert('Assignment submitted successfully!');
+                                form[0].reset(); // Reset the form on success
+                            } else {
+                                alert(`Error: ${response.message}`);
+                            }
+                        },
+                        error: function (xhr) {
+                            let errors = xhr.responseJSON?.errors;
+                            if (errors) {
+                                let errorMessage = Object.values(errors).flat().join('\n');
+                                alert(`Validation Error:\n${errorMessage}`);
+                            } else {
+                                alert('An error occurred while submitting your assignment. Please try again.');
+                            }
+                        },
+                    });
+                });
+            },
+            error: function (xhr) {
+                console.error('Failed to fetch topic details', xhr);
+            }
+        });
     }
+
 
     var course_id = "{{$course_id}}";
     var chapter = "{{$chapter_id}}";
@@ -177,7 +222,7 @@
                                         .replace(':course_id', course_id)
                                         .replace(':chapter_id', chapter)
                                         .replace(':topic_id', topic);
-    initializeTopicLinks(topicUrl, chapter, topic);
+    initializeTopicLinks(topicUrl, course_id, chapter, topic);
     var activeTopicId = null; // Update based on the current topic
 
     $.ajax({
@@ -270,7 +315,7 @@
         e.preventDefault();
         topicUrl = $(this).data('url');
         
-        initializeTopicLinks(topicUrl, $(this).data('chapter-id'), $(this).data('topic-id'));
+        initializeTopicLinks(topicUrl, course_id, $(this).data('chapter-id'), $(this).data('topic-id'));
     });
 
 });

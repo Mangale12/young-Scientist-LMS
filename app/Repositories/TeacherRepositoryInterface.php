@@ -10,5 +10,6 @@
                 public function update($id, TeacherRequest $request);
                 public function delete($id);
                 public function courseList($id);
+                public function assignmentList($teacher_id);
             }
             

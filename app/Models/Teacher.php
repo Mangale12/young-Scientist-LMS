@@ -14,13 +14,13 @@ class Teacher extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function courses()
-    {
-        return $this->belongsToMany(Course::class, 'teacher_courses');
-    }
-
     public function schoolGradeSectionCourseTeacher(){
         return $this->hasMany(SchoolGradeSectionCourseTeacher::class, 'teacher_id', 'id');
     }
+
+    public function assignmentSubmission(){
+        return $this->hasMany(AssignmentSubmission::class, 'teacher_id', 'id');
+    }
+    
 
 }

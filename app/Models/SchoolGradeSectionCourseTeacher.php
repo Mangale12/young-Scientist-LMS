@@ -17,4 +17,5 @@ class SchoolGradeSectionCourseTeacher extends Model
     public function schoolGradeSectionCourse(){
         return $this->belongsTo(SchoolGradeSectionCourse::class, 's_g_s_c_id', 'id');
     }
+    
 }

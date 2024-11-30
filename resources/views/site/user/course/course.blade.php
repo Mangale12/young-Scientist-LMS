@@ -94,7 +94,7 @@
         var topic_id = null;
         // Fetch course details via AJAX
         $.ajax({
-            url: `{{route('site.student.course-details', ':unique_id')}}`.replace(':unique_id', course_id),
+            url: `{{route($route.'.course-details', ':unique_id')}}`.replace(':unique_id', course_id),
             type: 'GET',
             success: function (response) {
                 if (!response.course) {
@@ -139,7 +139,7 @@
                         // Generate HTML for each topic
                         chapter.topics.forEach(topic => {
                             topic_id = topic.unique_id;
-                            const topicUrl = `{{ route('site.student.topic-details', ['course_id' => ':course_id', 'chapter_id' => ':chapter_id', 'topic_id' => ':topic_id']) }}`
+                            const topicUrl = `{{ route($route.'.topic-details', ['course_id' => ':course_id', 'chapter_id' => ':chapter_id', 'topic_id' => ':topic_id']) }}`
                                                 .replace(':course_id', course_id)
                                                 .replace(':chapter_id', chapter_id)
                                                 .replace(':topic_id', topic_id);

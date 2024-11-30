@@ -76,7 +76,7 @@ class TeacherController extends DM_BaseController
     }
 
     public function courseDetails(Request $request, $unique_id){
-        $route = 'site.student';
+        $route = 'site.teacher';
         if($request->ajax()){
             return $this->repository->courseDetails($unique_id);
         }else{
@@ -85,13 +85,16 @@ class TeacherController extends DM_BaseController
     }
 
     public function topicDetails(Request $request, $course_id, $chapter_id, $topic_id){
-        $route = 'site.student';
+        $route = 'site.teacher';
         if($request->ajax()){
             return $this->repository->topicDetails($course_id, $chapter_id, $topic_id);
         } else{
             return view('site.user.course.topic', compact('course_id', 'chapter_id', 'topic_id', 'route'));
         }
     }
-        
+    
+    public function assignmentList(){
+        return $this->repository->assignmentList(1);
+    }
     
 }

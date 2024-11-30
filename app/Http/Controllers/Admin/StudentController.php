@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\StudentRepositoryInterface;
 use App\Http\Requests\StudentRequest;
+use App\Http\Requests\AssignmentSubmissionRequest;
 use Yajra\DataTables\Facades\DataTables;
 
 class StudentController extends DM_BaseController
@@ -51,6 +52,9 @@ class StudentController extends DM_BaseController
         }
     }
     
+    public function assignMentSubmission(AssignmentSubmissionRequest $request){
+        return $this->repository->assignMentSubmission(auth()->user()->id, $request);
+    }
     // Fetch data for the DataTable
     public function getData(Request $request){
         if ($request->ajax()) {
