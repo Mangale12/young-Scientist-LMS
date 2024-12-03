@@ -32,5 +32,9 @@ class Student extends Model
         public function schoolSectionGradeStudent(){
             return $this->hasOne(SchoolSectionGradeStudent::class, 'student_id');
         }
+
+        public function assignmentSubmission(){
+            return $this->hasMany(AssignmentSubmission::class, 'student_id', 'id');
+        }
         
 }

@@ -26,4 +26,12 @@ class AssignmentSubmission extends Model
     public function assignment(){
         return $this->belongsTo(Assignment::class, 'assignment_id', 'id');
     }
+
+    public function teacher(){
+        return $this->belongsTo(Teacher::class, 'teacher_id', 'id');
+    }
+
+    public function feedback(){
+        return $this->hasOne(TeacherFeedback::class, 'assignment_submission_id', 'id');
+    }
 }

@@ -7,8 +7,13 @@
             <ul id="buddypanel-menu" class="buddypanel-menu side-panel-menu">
                 <li id="menu-item-58635"
                     class="bp-menu bp-my-courses-nav menu-item menu-item-type-custom menu-item-object-custom menu-item-58635">
-                    <a href="{{route('site.student.dashboard')}}"><i class="fa-regular fa-address-book"></i> <span class="menu-text"> &nbsp; My
+                    <a href="{{route($route.'.courses')}}"><i class="fa-regular fa-address-book"></i> <span class="menu-text"> &nbsp; My
                             Courses</span></a>
+                </li>
+                <li id="menu-item-58635"
+                    class="bp-menu bp-my-courses-nav menu-item menu-item-type-custom menu-item-object-custom menu-item-58635">
+                    <a href="{{route('site.teacher.assignment-list')}}"><i class="fa-regular fa-address-book"></i> <span class="menu-text"> &nbsp;
+                            Assignment List</span></a>
                 </li>
                 <li id="menu-item-58636"
                     class="bp-menu bp-certificates-nav menu-item menu-item-type-custom menu-item-object-custom menu-item-58636">

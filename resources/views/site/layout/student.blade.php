@@ -38,6 +38,61 @@
     <script>
     AOS.init();
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // Fetch assignments from the server
+            function fetchNotifications() {
+                $.ajax({
+                    url: `{{route($route.'.assignment-list')}}`, // Your API endpoint
+                    method: 'GET',
+                    success: function (response) {
+                        const notificationList = $('#notification-list');
+                        const notificationCount = $('#notification-count');
+                        notificationList.empty(); // Clear existing notifications
+
+                        if (response.assignments && response.assignments.length > 0) {
+                            // Update the notification count
+                            notificationCount.text(response.assignments.length);
+                            notificationCount.show(); // Ensure it's visible if hidden
+
+                            response.assignments.forEach(assignment => {
+                                const studentName = assignment.student?.user?.name || "Unknown Student"; // Check if name exists
+                                const topicName = assignment.assignment?.topic?.title || "Unknown Topic"; // Check if name exists
+
+                                // Create a notification item
+                                const notificationItem = `
+                                    <li>
+                                        <a href="#">
+                                            Assignment submitted by ${studentName} on topic: ${topicName}
+                                        </a>
+                                    </li>
+                                `;
+
+                                // Append to the list
+                                notificationList.append(notificationItem);
+                            });
+                        } else {
+                            // No notifications
+                            notificationCount.text('0');
+                            notificationList.append('<li><a href="#">No new notifications</a></li>');
+                        }
+                    },
+                    error: function () {
+                        $('#notification-list').html('<li><a href="#">Failed to load notifications</a></li>');
+                        $('#notification-count').hide(); // Hide count on error
+                    }
+                });
+            }
+
+            // Fetch notifications on page load
+            fetchNotifications();
+
+            // Optionally, refresh notifications periodically (e.g., every 60 seconds)
+            setInterval(fetchNotifications, 60000);
+        });
+    </script>
+
     @yield('scripts')
 
 </body>

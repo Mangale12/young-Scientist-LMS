@@ -23,6 +23,6 @@ class Topic extends Model
         return $this->belongsTo(Chapter::class);
     }
     public function assignment(){
-        return $this->hasOne(Assignment::class);
+        return $this->hasOne(Assignment::class, 'topic_id', 'id');
     }
 }

@@ -13,6 +13,9 @@ class SchoolGradeSection extends Model
     public function section(){
         return $this->belongsTo(Section::class);
     }
+    public function school(){
+        return $this->belongsTo(School::class, 'school_id', 'id');
+    }
 
     // public function courses()
     // {

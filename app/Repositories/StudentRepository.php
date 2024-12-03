@@ -71,12 +71,14 @@
                     }
 
                     // Format the response
-                    $formattedCourses = $studentCourses->schoolGradeSection->schoolSectionGradeCourses->map(function ($item) {
+                    $formattedCourses = $studentCourses->schoolGradeSection->schoolSectionGradeCourses->map(function ($item) use ($student) {
                         return [
                             'course_id' => $item->course->id ?? null,
-                            'title' => $item->course->title ?? 'No Title Available',
+                            'course_title' => $item->course->title ?? 'No Title Available',
                             'unique_id' => $item->course->unique_id ?? 'N/A',
                             'thumbnail' => $item->course->thumbnail ?? null,
+                            'course_description' =>$item->course->description,
+                            'school' => $student->school,
                         ];
                     });
 
@@ -89,6 +91,102 @@
                         'courses' => $formattedCourses,
                     ], 200);
                 }
+                
+                public function assignmentList($student_id)
+                {
+                    // // Fetch the student by ID
+                    // $student = $this->getById($student_id);
+
+                    // if (!$student) {
+                    //     return response()->json(['message' => 'Student not found'], 404);
+                    // }
+
+                    // // Get all assignment submissions for the student
+                    // $submissions = $student->assignmentSubmission()->with('feedback')->get();
+
+                    // if ($submissions->isEmpty()) {
+                    //     return response()->json([
+                    //         'message' => 'No assignments submitted by the student',
+                    //         'total_submissions' => 0,
+                    //         'feedback_count' => 0,
+                    //         'no_feedback_count' => 0,
+                    //     ]);
+                    // }
+
+                    // // Count submissions with feedback
+                    // $feedbackCount = $submissions->filter(function ($submission) {
+                    //     return $submission->feedback !== null; // Ensure feedback relationship is loaded
+                    // })->count();
+
+                    // // Count submissions without feedback
+                    // $noFeedbackCount = $submissions->count() - $feedbackCount;
+
+                    // return response()->json([
+                    //     'message' => 'Feedback status retrieved successfully',
+                    //     'total_submissions' => $submissions->count(),
+                    //     'feedback_count' => $feedbackCount,
+                    //     'no_feedback_count' => $noFeedbackCount,
+                    // ]);
+
+                    // Fetch the student by ID
+                    $student = $this->getById($student_id);
+
+                    if (!$student) {
+                        return response()->json(['message' => 'Student not found'], 404);
+                    }
+
+                    // Get all assignment submissions for the student
+                    $submissions = $student->assignmentSubmission()
+                        ->with(['feedback.teacher']) // Include feedback and teacher details
+                        ->get();
+
+                    if ($submissions->isEmpty()) {
+                        return response()->json([
+                            'message' => 'No assignments submitted by the student',
+                            'total_submissions' => 0,
+                            'feedback_count' => 0,
+                            'no_feedback_count' => 0,
+                        ]);
+                    }
+
+                    // Count submissions with feedback
+                    $feedbackCount = $submissions->filter(function ($submission) {
+                        return $submission->feedback !== null; // Check if feedback exists
+                    })->count();
+
+                    // Count submissions without feedback
+                    $noFeedbackCount = $submissions->count() - $feedbackCount;
+
+                    // Prepare response data including teacher details
+                    $responseData = $submissions->map(function ($submission) {
+                        return [
+                            'assignment_id' => $submission->id,
+                            'feedback' => $submission->feedback ? [
+                                'feedback_id' => $submission->feedback->id,
+                                'description' => $submission->feedback->feed_back,
+                                'teacher' => [
+                                    'id' => $submission->feedback->teacher->id,
+                                    'name' => $submission->feedback->teacher->name,
+                                    'email' => $submission->feedback->teacher->email,
+                                ],
+                                'file_path' => $submission->feedback->file_path,
+                            ] : null,
+                        ];
+                    });
+
+                    return response()->json([
+                        'message' => 'Feedback status retrieved successfully',
+                        'total_submissions' => $submissions->count(),
+                        'feedback_count' => $feedbackCount,
+                        'no_feedback_count' => $noFeedbackCount,
+                        'submissions' => $responseData,
+                    ]);
+
+                }
+
+
+
+
 
                 
                 public function coursesChapterCount($courseId){

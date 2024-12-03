@@ -5,10 +5,21 @@
             use DB;
             use Illuminate\Support\Facades\Log; 
             use App\Models\Teacher;
+            use App\Http\Requests\TeacherFeedbackRequest;
             use App\Models\User;
 
             class TeacherRepository extends DM_BaseRepository implements TeacherRepositoryInterface
             {
+                protected $folder_path_image;
+                protected $folder_path_file;
+                protected $folder = 'teacher/feedback';
+                protected $file   = 'file';
+                protected $prefix_path_image = '/upload_file/teacher/feedback/';
+                protected $prefix_path_file = '/upload_file/teacher/feedback/file/';
+                public function __construct(){
+                    $this->folder_path_image = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
+                    $this->folder_path_file = getcwd() . DIRECTORY_SEPARATOR . 'upload_file' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR;
+                }
                 
                 public function getAll()
                 {
@@ -90,6 +101,7 @@
                         return [
                             'school_grade_course_id' => $schoolGradeCourse->id ?? null,
                             'school_grade_section_id' => $schoolGradeCourse->school_grade_section_id ?? null,
+                            'school' => $schoolGradeCourse->schoolGradeSection->school ?? null,
                             'course_id' => $courseDetails->id ?? null,
                             'course_title' => $courseDetails->title ?? 'No Title Available',
                             'course_description' => $courseDetails->description ?? 'No Description Available',
@@ -109,6 +121,154 @@
                         'courses' => $courses,
                     ], 200);
                 }
+
+                
+                public function courseAssignment($course_id)
+                {
+                    // Get the teacher by ID (assuming you're using the teacher's unique ID for searching)
+                    $teacher = $this->getById(1); // Replace with dynamic teacher ID if needed
+
+                    if (!$teacher) {
+                        return response()->json(['message' => 'Teacher not found'], 404);
+                    }
+
+                    // Eager load related courses, chapters, topics, and assignments
+                    $teacher->load([
+                        'schoolGradeSectionCourseTeacher.schoolGradeSectionCourse.course.chapter.topics.assignment'
+                    ]);
+
+                    // Assuming the teacher has only one associated schoolGradeSectionCourseTeacher
+                    $courseTeacher = $teacher->schoolGradeSectionCourseTeacher->first(); // Fetch the first course teacher
+
+                    if (!$courseTeacher) {
+                        return response()->json(['message' => 'Course Teacher not found'], 404);
+                    }
+
+                    // Get the course associated with the teacher's course
+                    $course = $courseTeacher->schoolGradeSectionCourse->course->where('unique_id', $course_id)->first();
+
+                    if (!$course) {
+                        return response()->json(['message' => 'Course not found'], 404);
+                    }
+
+                    // Fetching assignments (since each topic has only one assignment)
+                    $assignments = $course->chapter->flatMap(function ($chapter) {
+                        return $chapter->topics->map(function ($topic) {
+                            return $topic->assignment; // Fetch the single assignment for each topic
+                        });
+                    })->filter(function ($assignment) {
+                        return $assignment !== null; // Remove null assignments
+                    })->values()->toArray();
+
+                    // Return all assignments as a JSON response
+                    return response()->json(['assignments'=>$assignments]);
+                }
+
+                public function courseAssignmentSubmit($school_id, $course_id, $assignment_id)
+                {
+                    // Get the teacher by ID
+                    $teacher = $this->getById(1); // Replace with dynamic teacher ID if needed
+
+                    if (!$teacher) {
+                        return response()->json(['message' => 'Teacher not found'], 404);
+                    }
+
+                    // Eager load related data with a constraint on the school
+                    $teacher->load([
+                        'schoolGradeSectionCourseTeacher.schoolGradeSectionCourse.course.chapter.topics.assignment.assignmentSubmission',
+                        'schoolGradeSectionCourseTeacher.schoolGradeSectionCourse.schoolGradeSection.school'
+                    ]);
+
+                    // Filter courses by school_id
+                    $courseTeacher = $teacher->schoolGradeSectionCourseTeacher
+                        ->firstWhere('schoolGradeSectionCourse.schoolGradeSection.school.id', $school_id);
+
+                    if (!$courseTeacher) {
+                        return response()->json(['message' => 'No course found for the given school'], 404);
+                    }
+
+                    // Get the course associated with the teacher's course
+                    $course = $courseTeacher->schoolGradeSectionCourse->course
+                        ->where('unique_id', $course_id)
+                        ->first();
+
+                    if (!$course) {
+                        return response()->json(['message' => 'Course not found'], 404);
+                    }
+
+                    // Fetch all submitted assignments securely by traversing the structure
+                    $submittedAssignments = $course->chapter->flatMap(function ($chapter) use ($assignment_id, $course) {
+                        return $chapter->topics->flatMap(function ($topic) use ($assignment_id, $course, $chapter) {
+                            return $topic->assignment
+                                ? $topic->assignment->assignmentSubmission->filter(function ($submission) use ($assignment_id) {
+                                    return $submission->assignment_id == $assignment_id;
+                                })->map(function ($submission) use ($course, $chapter) {
+                                    return [
+                                        'id' => $submission->id,
+                                        'assignment_id' => $submission->assignment_id,
+                                        'student_id' => $submission->student->id,
+                                        'student_name' => $submission->student->user->name ?? 'unknown student',
+                                        'submitted_at' => date('Y-m-d', strtotime($submission->created_at)),
+                                        'course_title' => $course->title,
+                                        'chapter_title' => $chapter->title,
+                                        'school_name' => optional($course->school)->name ?? 'Unknown School',
+                                    ];
+                                })
+                                : collect();
+                        });
+                    })->filter()->values()->toArray();
+
+                    // Return all submitted assignments as a JSON response
+                    return response()->json(['submitted_assignments' => $submittedAssignments]);
+                }
+
+                public function feedback(TeacherFeedbackRequest $request)
+                {
+                    $teacher = $this->getById(1);
+
+                    if (!$teacher) {
+                        return response()->json(['message' => 'Teacher not found'], 404);
+                    }
+
+                    // Eager load related data
+                    $teacher->load([
+                        'schoolGradeSectionCourseTeacher.schoolGradeSectionCourse.course.chapter.topics.assignment.assignmentSubmission',
+                        'schoolGradeSectionCourseTeacher.schoolGradeSectionCourse.schoolGradeSection.school'
+                    ]);
+
+                    // Find the assignment submission
+                    $submission = $teacher->schoolGradeSectionCourseTeacher
+                        ->flatMap(function ($courseTeacher) {
+                            return $courseTeacher->schoolGradeSectionCourse->course->chapter->flatMap(function ($chapter) {
+                                return $chapter->topics->flatMap(function ($topic) {
+                                    return $topic->assignment->assignmentSubmission ?? collect();
+                                });
+                            });
+                        })
+                        ->firstWhere('id', $request->assignment_submission_id);
+
+                    if (!$submission) {
+                        return response()->json(['message' => 'Assignment submission not found'], 404);
+                    }
+                    $filePath = null;
+                    if ($request->hasFile('feedback_file')) {
+                        $file_path = parent::uploadImage($request->feedback_file, $this->folder_path_image, $this->prefix_path_image);
+                    }
+                    $submission->feedback()->create([
+                        'file_path' => $file_path,
+                        'teacher_id' => 1,
+                        'feed_back' => $request->description,
+                    ]);
+                    return response()->json([
+                        'message' => 'Feedback submitted successfully',
+                    ]);
+                }
+
+
+
+
+
+
                
                 // public function courseList($id)
                 // {
@@ -300,16 +460,31 @@
                 public function assignmentList($teacher_id)
                 {
                     // Fetch the teacher by ID
-                    $teacher = $this->getById(1);
+                    $teacher = $this->getById($teacher_id);
 
                     if (!$teacher) {
                         return response()->json(['message' => 'Teacher not found'], 404);
                     }
 
                     // Fetch assignments submitted to the teacher that are not viewed
-                    $assignments = $teacher->assignmentSubmissions()
+                    $assignments = $teacher->assignmentSubmission()
                         ->where('is_viewed', false)
-                        ->with(['student', 'topic.chapter.course']) // Include related data
+                        ->with([
+                            'student' => function($query) {
+                                $query->with('user'); // Fetch student profile details
+                            }, // Fetch student details
+                            'assignment' => function ($query) {
+                                $query->with([
+                                    'topic' => function ($query) {
+                                        $query->with([
+                                            'chapter' => function ($query) {
+                                                $query->with('course'); // Fetch course details
+                                            }
+                                        ]);
+                                    }
+                                ]);
+                            }
+                        ])
                         ->get();
 
                     if ($assignments->isEmpty()) {
@@ -318,6 +493,7 @@
 
                     return response()->json(['assignments' => $assignments], 200);
                 }
+
 
 
             }

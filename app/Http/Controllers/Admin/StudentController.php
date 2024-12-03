@@ -27,9 +27,25 @@ class StudentController extends DM_BaseController
         $route = 'site.student';
         return view('site.user.dashboard', compact('route'));
     }
-    public function courses(){
-        return $this->repository->courses(auth()->user()->id);
+    public function courses(Request $request){
+        $route = 'site.student';
+        if($request->ajax()){
+            return $this->repository->courses(auth()->user()->id);
+        }else{
+            return view('site.user.course.course-list', compact('route'));
+        }
+        
     }
+
+    public function assignmentList(Request $request){
+        $route = 'site.student';
+        if($request->ajax()){
+            return $this->repository->assignmentList(2);
+        }else{
+            return view('site.user.assignment-list', compact('route'));
+        }
+    }
+
     public function coursesChapterCount($courseId){
         return $this->repository->coursesChapterCount($courseId);
     }

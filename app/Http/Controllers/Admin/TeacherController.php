@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\TeacherRepositoryInterface;
 use App\Http\Requests\TeacherRequest;
+use App\Http\Requests\TeacherFeedbackRequest;
 use Yajra\DataTables\Facades\DataTables;
 
 class TeacherController extends DM_BaseController
@@ -68,8 +69,24 @@ class TeacherController extends DM_BaseController
     }
 
     // for teacher dashboard
-    public function courseList(){
-        return $this->repository->courseList(1);
+    public function courseList(Request $request){
+        $route = 'site.teacher';
+        if($request->ajax()){
+            return $this->repository->courseList(1);
+        }else{
+            return view('site.user.course.course-list', compact('route'));
+        }
+    }
+    public function courseAssignment($course_id){
+        return $this->repository->courseAssignment($course_id);
+    }
+
+    public function courseAssignmentSubmit($school_id, $course_id, $assignment_id){
+        return $this->repository->courseAssignmentSubmit($school_id, $course_id, $assignment_id);
+    }
+
+    public function feedback(TeacherFeedbackRequest $request){
+        return $this->repository->feedback($request);
     }
     public function coursesChapterCount($courseId){
         return $this->repository->coursesChapterCount($courseId);
@@ -93,8 +110,13 @@ class TeacherController extends DM_BaseController
         }
     }
     
-    public function assignmentList(){
-        return $this->repository->assignmentList(1);
+    public function assignmentList(Request $request){
+        $route = 'site.teacher';
+        if($request->ajax()){
+            return $this->repository->assignmentList(1);
+        }else{
+            return view('site.user.assignment-list', compact('route'));
+        }
     }
     
 }

@@ -110,8 +110,6 @@
   </div>
 </div>
 
-
-
 {{-- add new chpater --}}
 <div class="modal fade chapter-form-modal" id="chapter-form-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">

@@ -123,7 +123,6 @@
                         //throw $th;
                         DB::rollBack();
                         Log::info($th);
-                        dd($th);
                         return false; 
                     }
                     

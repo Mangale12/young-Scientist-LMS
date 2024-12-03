@@ -19,5 +19,6 @@
                 public function getSection();
                 public function topicDetails($course_id, $chapter_id, $topic_id);
                 public function assignMentSubmission($student_id, $request);
+                public function assignmentList($id);
             }
             

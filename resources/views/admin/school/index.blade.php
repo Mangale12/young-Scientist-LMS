@@ -327,7 +327,6 @@
 
 
 @endsection
-<!-- ./wrapper -->
 @section('scripts')
 <!-- DataTables JS -->
 <script src="{{ asset('https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js') }}"></script>
